@@ -30,7 +30,7 @@ API请求。
 ### 可访问性测试
 
 通过使用[代码生成器](https://console.cloudbypass.com/#/code-generator)
-检查目标网站是否可以突破，新注册用户可以[联系客服](https://t.me/cloudbypass)获取试用。
+检查目标网站是否可以突破，新注册用户可以[联系客服](https://t.me/cloudbypasscom)获取试用。
 
 ### 关于穿云API版本
 
@@ -67,4 +67,4 @@ API请求。
 ### 获取帮助
 
 * [访问论坛](https://www.cloudbypass.com/blog/)
-* [联系客服](https://t.me/cloudbypass)
+* [联系客服](https://t.me/cloudbypasscom)

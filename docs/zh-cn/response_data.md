@@ -82,4 +82,4 @@
 ### 问题反馈
 
 * [访问论坛](https://www.cloudbypass.com/blog/)
-* [联系客服](https://t.me/cloudbypass)
+* [联系客服](https://t.me/cloudbypasscom)

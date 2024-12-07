@@ -30,7 +30,7 @@ Check out the existing [code examples](https://github.com/cloudbypass/example) t
 
 ### Accessibility Testing
 
-By using the [Code Generator](https://console.scrapingbypass.com/#/code-generator) to check whether the target website can be breached, newly registered users can [Customer Support](https://t.me/cloudbypass) to get a trial.
+By using the [Code Generator](https://console.scrapingbypass.com/#/code-generator) to check whether the target website can be breached, newly registered users can [Customer Support](https://t.me/cloudbypasscom) to get a trial.
 
 ### About version
 
@@ -66,4 +66,4 @@ Scrapingbypass v1 comes with a dynamic proxy by default, and you can also set up
 ### Get Help
 
 * [Visit the forum](https://www.scrapingbypass.com/blog/)
-* [Customer Support](https://t.me/cloudbypass)
+* [Customer Support](https://t.me/cloudbypasscom)
