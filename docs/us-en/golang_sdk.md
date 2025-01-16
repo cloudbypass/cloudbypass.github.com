@@ -1,6 +1,7 @@
 # Golang SDK
 
-> Inherits [go-resty/resty#supported-go-versions](https://github.com/go-resty/resty#supported-go-versions) v2 Supported Go versions
+> Inherits [go-resty/resty#supported-go-versions](https://github.com/go-resty/resty#supported-go-versions) v2 Supported
+> Go versions
 
 [![GoDoc](https://godoc.org/github.com/cloudbypass/golang-sdk?status.svg)](https://godoc.org/github.com/cloudbypass/golang-sdk ":no-zoom")
 [![Go Report Card](https://goreportcard.com/badge/github.com/cloudbypass/golang-sdk)](https://goreportcard.com/report/github.com/cloudbypass/golang-sdk ":no-zoom")
@@ -25,11 +26,12 @@ require github.com/cloudbypass/golang-sdk latest
 import cloudbypass "github.com/cloudbypass/golang-sdk"
 ```
 
-### Send Request
+### Make a Request
 
 Create a new `resty.Client` instance using `cloudbypass.New()`.
 
-Added initialization parameters `apikey` and `proxy` to set the Scrapingbypass API service key and proxy IP respectively.
+Added initialization parameters `apikey` and `proxy` to set the Scrapingbypass API service key and proxy IP
+respectively.
 
 Custom users can specify the service address by setting the `api_host` parameter.
 
@@ -64,7 +66,8 @@ func main() {
 
 ### Using V2
 
-Scrapingbypass API V2 is suitable for websites that need to pass JS challenge verification. For example, visit https://etherscan.io/accounts/label/lido and request an example:
+Scrapingbypass API V2 is suitable for websites that need to pass JS challenge verification. For example,
+visit https://etherscan.io/accounts/label/lido and request an example:
 
 ```go
 package main
@@ -75,10 +78,43 @@ import (
 )
 
 func main() {
+	// Cookie mode: The server returns an encrypted cookie, which is sent by the client for authentication in the next request.
 	client := cloudbypass.New(cloudbypass.BypassConfig{
 		Apikey: "/* APIKEY */",
-		Part:   "0",
 		Proxy:  "/* PROXY */",
+		UseV2:  true,
+	})
+
+	resp, err := client.R().
+		EnableTrace().
+		Get("https://etherscan.io/accounts/label/lido")
+
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	fmt.Println(resp.StatusCode(), resp.Header().Get("X-Cb-Status"))
+	fmt.Println(resp.Header().Get("set-cookie"))
+	fmt.Println(resp.String())
+}
+
+```
+
+```go
+package main
+
+import (
+	"fmt"
+	cloudbypass "github.com/cloudbypass/golang-sdk"
+)
+
+func main() {
+	// Part mode: The server manages the authentication cookie, and the client only needs to control the part parameter.
+	client := cloudbypass.New(cloudbypass.BypassConfig{
+		Apikey: "/* APIKEY */",
+		Proxy:  "/* PROXY */",
+		Part:   "0",
 	})
 
 	resp, err := client.R().
@@ -123,14 +159,16 @@ func main() {
 
 ### Extraction Proxy
 
-Create a CloudPiercing proxy instance through the `NewProxy` method, which can extract the CloudPiercing dynamic proxy IP and time-sensitive proxy IP.
+Create a CloudPiercing proxy instance through the `NewProxy` method, which can extract the CloudPiercing dynamic proxy
+IP and time-sensitive proxy IP.
 
 + `Copy()` Duplicate the proxy instance so that the original proxy instance is not affected.
 + `SetDynamic()` Set as dynamic proxy.
 + `SetExpire(expire int)` Set to time-limited proxy, the parameter is the IP expiration time, in seconds.
 + `SetRegion(region string)` Set the proxy IP region.
 + `String()` Returns the proxy IP string.
-+ `StringFormat(format string)` Format proxy IP. The parameter is a formatted string, for example, `username:password@gateway`.
++ `StringFormat(format string)` Format proxy IP. The parameter is a formatted string, for
+  example, `username:password@gateway`.
 + `SetFormat(format string)` Set the proxy IP format string.
 + `Iterate(count int)` Returns an iterator of proxy IP instances, with the parameter being the number of extractions.
 + `Loop(count int)` Returns a proxy IP instance loop iterator, with the parameter being the actual number.
@@ -178,4 +216,5 @@ func main() {
 
 ### About redirection issues
 
-When using the SDK to initiate a request, the redirection operation is automatically handled without manual processing. The redirection response will also consume credits.
+When using the SDK to initiate a request, the redirection operation is automatically handled without manual processing.
+The redirection response will also consume credits.

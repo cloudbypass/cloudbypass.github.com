@@ -1,1 +1,1 @@
-* [**中文**](/zh-cn/ ':ignore title :target=_self')
+* [**中文**](/#/zh-cn/ ':ignore title :target=_self')

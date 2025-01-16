@@ -48,18 +48,19 @@ Or, if you're using ES modules:
 import cloudbypass from 'cloudbypass-sdk';
 ```
 
-### Send Request
+### Make a Request
 
-After importing `cloudbypass-sdk`, you can use it as `axios`.
+After importing `cloudbypass-sdk`, you can use it similarly to `axios`.
 
-The `config` parameter supports all `axios` request configurations and supports the following configurations:
+The `config` parameter supports all `axios` request configurations, along with the following additional configurations:
 
-- `cb_apikey` APIKey;
-- `cb_part` When using V2, just set the part parameter;
-- `cb_proxy` Proxy address, supports http and socks5 proxy;
-- `cb_apihost` Custom users can use their own API server;
+- `cb_apikey`: API key;
+- `cb_use_v2`: Use V2 mode, default is `false`;
+- `cb_part`: Use V2 and enable part mode;
+- `cb_proxy`: Proxy address, supports both http and socks5 proxies;
+- `cb_apihost`: Custom users can use their own API server;
 
-> The above parameters can be configured using the environment variables `CB_APIKEY`, `CB_PROXY`, and `CB_APIHOST`.
+> The above parameters can be configured using environment variables `CB_APIKEY`, `CB_PROXY`, and `CB_APIHOST`.
 
 ```js
 import cloudbypass from 'cloudbypass-sdk';
@@ -87,18 +88,39 @@ import cloudbypass from 'cloudbypass';
 // Using Node.js `require()`
 // const cloudbypass = require('cloudbypass');
 
-cloudbypass.get('https://etherscan.io/accounts/label/lido', {
-    cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-    cb_part: '0',
-    cb_proxy: 'http://proxy:port'
-})
-    .then(function (response) {
-        console.log(response.status, response.headers.get("x-cb-status"));
-        console.log(response.data);
-    })
-    .catch(function (error) {
-        console.log(error.response.data || error.response || error.message);
-    });
+// Cookie mode: The server returns an encrypted cookie, which is sent by the client for authentication in the next request.
+try {
+    const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
+        cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        cb_proxy: 'http://proxy:port',
+        cb_use_v2: true
+    }));
+    console.log(resp.headers['set-cookie']);
+    console.log(resp.data);
+} catch (e) {
+    if (isBypassError(e)) {
+        console.log(e.response.data || e.response || e.message);
+    } else {
+        console.log(e);
+    }
+}
+
+// Part mode: The server manages the authentication cookie, and the client only needs to control the part parameter.
+try {
+    const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
+        cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        cb_proxy: 'http://proxy:port',
+        cb_part: '0'
+    }));
+    console.log(resp.status, resp.headers.get("x-cb-status"));
+    console.log(resp.data);
+} catch (e) {
+    if (isBypassError(e)) {
+        console.log(e.response.data || e.response || e.message);
+    } else {
+        console.log(e);
+    }
+}
 ```
 
 ### Check balance
@@ -160,6 +182,7 @@ for (let i = 0; i < 10; i++) {
 }
 ```
 
-### About redirection issues
+### About Redirection Issues
 
-When using the SDK to initiate a request, the redirection operation is automatically handled without manual processing. The redirection response will also consume credits.
+When making requests with the SDK, redirection is automatically handled, and manual handling is not required. Redirect
+responses will also consume credits.

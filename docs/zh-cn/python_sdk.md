@@ -1,13 +1,15 @@
 # Python SDK
 
-> Cloudbypass Python SDK 仅支持 Python 3.6 及以上版本。
+### 开始使用
+
+> Cloudbypass Python SDK 仅支持 Python 3.7 及以上版本。
 
 在`psf/requests`基础上封装的穿云SDK，支持穿云API服务的调用。通过内置的会话管理器，可以自动处理会话请求，无需手动管理Cookie等信息。
 
-[![cloudbypass](https://img.shields.io/pypi/pyversions/cloudbypass)](https://pypi.org/project/cloudbypass/ ":no-zoom")
-[![cloudbypass](https://img.shields.io/pypi/v/cloudbypass)](https://pypi.org/project/cloudbypass/ ":no-zoom")
-[![cloudbypass](https://img.shields.io/pypi/dd/cloudbypass)](https://pypi.org/project/cloudbypass/#files ":no-zoom")
-[![cloudbypass](https://img.shields.io/pypi/wheel/cloudbypass)](https://pypi.org/project/cloudbypass/ ":no-zoom")
+[![cloudbypass](https://img.shields.io/pypi/pyversions/cloudbypass)](https://pypi.org/project/cloudbypass/)
+[![cloudbypass](https://img.shields.io/pypi/v/cloudbypass)](https://pypi.org/project/cloudbypass/)
+[![cloudbypass](https://img.shields.io/pypi/dd/cloudbypass)](https://pypi.org/project/cloudbypass/#files)
+[![cloudbypass](https://img.shields.io/pypi/wheel/cloudbypass)](https://pypi.org/project/cloudbypass/)
 
 ### 安装
 
@@ -17,13 +19,13 @@ python3 -m pip install cloudbypass -i https://pypi.org/simple
 
 ### 发起请求
 
-`Session`类继承自`requests.Session`，支持`requests`的所有方法。
+`cloudbypass` 基于 `requests` 库，支持所有 `requests` 的方法。
 
-增加初始化参数`apikey`和`proxy`，分别用于设置穿云API服务密钥和代理IP。
+通过添加初始化参数 `apikey` 和 `proxy`，分别用于设置穿云 API 服务密钥和代理 IP。
 
-定制用户可以通过设置`api_host`参数来指定服务地址。
+定制用户可以通过设置 `api_host` 参数来指定服务地址。
 
-> 以上参数可使用环境变量`CB_APIKEY`、`CB_PROXY`和`CB_APIHOST`进行配置。
+> 以上参数也可以通过环境变量 `CB_APIKEY`、`CB_PROXY` 和 `CB_APIHOST` 进行配置。
 
 ```python
 from cloudbypass import Session
@@ -37,8 +39,6 @@ if __name__ == '__main__':
 
 #### async
 
-`AsyncSession`类继承自`aiohttp.ClientSession`，支持`aiohttp`的所有方法。
-
 ```python
 import asyncio
 from cloudbypass import AsyncSession
@@ -48,9 +48,8 @@ async def main():
     async with AsyncSession(apikey="<APIKEY>", proxy="http://proxy:port") as session:
         resp = await session.get("https://opensea.io/category/memberships")
         print("Status:", resp.status)
-        print("Content-type:", resp.headers['content-type'])
-        html = await resp.text()
-        print("Body:", html[:15], "...")
+        text = await resp.text()
+        print("Body:", text)
 
 
 if __name__ == '__main__':
@@ -63,29 +62,46 @@ if __name__ == '__main__':
 穿云API V2适用于需要通过JS质询验证的网站。例如访问https://etherscan.io/accounts/label/lido ，请求示例：
 
 ```python
-from cloudbypass import Session
+from cloudbypass import SessionV2
 
 if __name__ == '__main__':
-    with Session(apikey="<APIKEY>", proxy="http://proxy:port") as session:
-        resp = session.get("https://etherscan.io/accounts/label/lido", part="0")
-        print(resp.status_code, resp.headers.get("x-cb-status"))
-        print(resp.text)
+    # Cookie模式：服务端返回加密Cookie，下次请求时由客户端发送验证Cookie
+    with SessionV2(apikey="<APIKEY>", proxy="http://proxy:port") as session:
+        resp = session.get("https://etherscan.io/accounts/label/lido")
+        print("Status:", resp.status_code, resp.headers.get("x-cb-status"))
+        print("Cookie:", resp.headers.get("set-cookie"))
+        print("Body:", resp.text)
+
+    # Part模式：由服务端管理验证Cookie，客户端只需要控制part参数
+    with SessionV2(apikey="<APIKEY>", proxy="http://proxy:port", part="0") as session:
+        resp = session.get("https://etherscan.io/accounts/label/lido")
+        print("Status:", resp.status_code, resp.headers.get("x-cb-status"))
+        print("Body:", resp.text)
+
 ```
 
 #### async
 
 ```python
 import asyncio
-from cloudbypass import AsyncSession
+from cloudbypass import AsyncSessionV2
 
 
 async def main():
-    async with AsyncSession(apikey="<APIKEY>", proxy="http://proxy:port") as session:
-        resp = await session.get("https://etherscan.io/accounts/label/lido", part="0")
+    # Cookie模式：服务端返回加密Cookie，下次请求时由客户端发送验证Cookie
+    async with AsyncSessionV2(apikey="<APIKEY>", proxy="http://proxy:port") as session:
+        resp = await session.get("https://etherscan.io/accounts/label/lido")
         print("Status:", resp.status)
-        print("Content-type:", resp.headers['content-type'])
-        html = await resp.text()
-        print("Body:", html[:15], "...")
+        print("Cookie:", resp.headers.get("set-cookie"))
+        text = await resp.text()
+        print("Body:", text)
+
+    # Part模式：由服务端管理验证Cookie，客户端只需要控制part参数
+    async with AsyncSessionV2(apikey="<APIKEY>", proxy="http://proxy:port", part="0") as session:
+        resp = await session.get("https://etherscan.io/accounts/label/lido")
+        print("Status:", resp.status)
+        text = await resp.text()
+        print("Body:", text)
 
 
 if __name__ == '__main__':
