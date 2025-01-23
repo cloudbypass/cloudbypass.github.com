@@ -107,7 +107,7 @@ Scrapingbypass V2 supports handling the `Turnstile` component verification. Belo
   Typically, after a successful verification, `Turnstile` will return a token string starting with `0.`, or other names like `cf-turnstile-response` or `turnstileToken`, depending on the naming convention.
 
 - **Token Usage**  
-  Scrapingbypass V2 will not return the Token directly to the client. Instead, it will replace `[cf-token]` in the request with the valid Token and initiate the request.
+  Scrapingbypass V2 will not return the Token directly to the client. Instead, it will replace `[cf_token]` in the request with the valid Token and initiate the request.
 
 **Usage Examples**
 

@@ -112,7 +112,7 @@ API请求。
   或 `turnstileToken`，只是命名方式不同。
 
 - **Token 使用方式**  
-  穿云V2不会将 Token 直接返回到客户端，而是在需要使用 Token 的位置填充 `[cf-token]` 字符串，穿云会自动替换为有效的 Token
+  穿云V2不会将 Token 直接返回到客户端，而是在需要使用 Token 的位置填充 `[cf_token]` 字符串，穿云会自动替换为有效的 Token
   并发起请求。
 
 **使用示例**
