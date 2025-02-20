@@ -7,7 +7,7 @@
 通过HTTP API和密钥获取账号实时积分余额，您可以使用任何程序或脚本调用此接口。
 
 ```shell
-curl "https://console.cloudbypass.com/api/v1/balance?apikey=<APIKEY>"
+curl "https://console.cloudbypass.com/api/v1/balance?apikey=<APIKEY>&email=<email>"
 ```
 
 ### 通过SDK
