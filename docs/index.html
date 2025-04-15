@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no, viewport-fit=cover">
+    <link rel="icon" href="/favicon.png" />
+
+    <!-- Replace with your own title and description. -->
+    <title>Cloudbypass Documentation</title>
+    <meta name="description" content="使用穿云可以帮助您轻松绕过Cloudflare的验证，目前支持绕过JS质询、Turnstile等产品验证。">
+
+    <!-- Default Theme (see https://docsify.js.org/#/themes) -->
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+    <style>
+        img {
+            max-width: 80%;
+        }
+
+        .app-name-link > img {
+            max-width: 60px;
+        }
+
+        .coral {
+            color: coral;
+        }
+
+        .active .coral {
+            color: inherit;
+        }
+
+        .docsify-tabs__content {
+            padding: 0 !important;
+        }
+
+    </style>
+    <script src="static/docsify-tabs.js"></script>
+</head>
+
+<body>
+<!--<nav>
+    <a href="#/us-en/quickstart">EN</a>
+    <a href="#/zh-cn/quickstart">中文</a>
+</nav>-->
+<div id="app"></div>
+
+<script>
+    // Docsify Configuration (see https://docsify.js.org/#/configuration)
+    window.$docsify = {
+        name: 'Cloudbypass',
+        logo: '/_media/icon.png',
+        // themeColor: '#5d70f8',
+        fallbackLanguages: ['zh-cn'],
+        coverpage: {
+            '/us-en/': '_coverpage.md',
+            '/zh-cn/': '_coverpage.md',
+        },
+        // 按照路由切换
+        nameLink: {
+            '/zh-cn/': '#/zh-cn/quickstart',
+            '/us-en/': '#/us-en/quickstart',
+            '/': '#/',
+        },
+        // Sidebar Configuration
+        auto2top: true,
+        loadNavbar: true,
+        loadSidebar: true,
+        alias: {
+            '/*/_sidebar.md': '/_sidebar.md'
+        },
+        maxLevel: 0,
+        // Set subMaxLevel to 0 to remove automatic display of page table of contents (TOC) in Sidebar
+        subMaxLevel: 3,
+
+        // Search Plugin Configuration
+        search: {
+            placeholder: {
+                '/zh-cn/': '搜索',
+                '/': 'Type to search'
+            },
+            // Headline depth, 1 - 6
+            depth: 2,
+            // 支持本地化
+            noData: {
+                '/zh-cn/': '找不到结果',
+                '/us-en': 'No Results'
+            },
+            pathNamespaces: ['/zh-cn', '/us-en'],
+        },
+        plugins: [
+            /*function (hook, vm) {
+                hook.beforeEach(function (html) {
+                    return (
+                        html +
+                        '\n\n----\n\n' +
+                        '<a href="https://www.cloudbypass.com/" target="_blank" style="color: inherit; font-weight: normal; text-decoration: none;">Powered by Cloudbypass</a>'
+                    );
+                })
+            },*/
+        ],
+    };
+</script>
+
+<!-- Required -->
+<script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>
+
+<!-- Recommended -->
+<script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/zoom-image.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.js"></script>
+<script src="//cdn.jsdelivr.net/npm/docsify-copy-code/dist/docsify-copy-code.min.js"></script>
+<script src="./static/docsify-tabs.js"></script>
+
+</body>
+</html>
