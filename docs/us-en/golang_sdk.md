@@ -145,7 +145,7 @@ import (
 )
 
 func main() {
-	balance, err := cloudbypass.GetBalance( /* APIKEY */)
+	balance, err := cloudbypass.GetBalance( "/* APIKEY */", "/* EMAIL */")
 
 	if err != nil {
 		fmt.Println(err)

@@ -117,7 +117,7 @@ if __name__ == '__main__':
 from cloudbypass import get_balance
 
 if __name__ == '__main__':
-    print(get_balance("<APIKEY>"))
+    print(get_balance("<APIKEY>", "<EMIAL>"))
 
 ```
 
@@ -129,7 +129,7 @@ from cloudbypass import async_get_balance
 
 
 async def main():
-    print(await async_get_balance("<APIKEY>"))
+    print(await async_get_balance("<APIKEY>", "<EMIAL>"))
 
 
 if __name__ == '__main__':
