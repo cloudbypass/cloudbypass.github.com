@@ -78,7 +78,7 @@
 | SOURCE_SERVER_ERROR          | `所有版本` | 该错误是由于源服务器错误导致的，<br/>请参考：<a rel="nofollow noreferrer" href="https://developers.cloudflare.com/support/troubleshooting/cloudflare-errors/troubleshooting-cloudflare-5xx-errors" target="_blank">Cloudflare文档</a><br />                                                                                          |
 | BAD_GATEWAY                  | `所有版本` | 网关错误，可能是由于Cloudflare无法连接到源服务器造成的，<br/>请参考：<a rel="nofollow noreferrer" href="https://developers.cloudflare.com/support/troubleshooting/cloudflare-errors/troubleshooting-cloudflare-5xx-errors/#error-502-bad-gateway-or-error-504-gateway-timeout" target="_blank">Cloudflare文档</a><br />建议更换被允许访问的IP。        |
 | INTERNAL_ERROR               | `所有版本` | 内部错误，我们在收到错误消息后会尽快修复。                                                                                                                                                                                                                                                                                          |
-| PROXY_NON_STICKY             | `v2`   | (仅穿云代理)挑战前检查代理是否为粘性IP，非粘性IP无法完成验证，为避免资源浪费会返回该提示。 需要忽略验证可以设置 [no-challenge](/zh-cn/request_parameters?id=configuration-options-list)。                                                                                                                                                                           |
+| PROXY_NON_STICKY             | `v2`   | (仅穿云代理)挑战前检查代理是否为粘性IP，非粘性IP无法完成验证，为避免资源浪费会返回该提示。 需要忽略验证可以设置 [no-challenge](/zh-cn/request_parameters?id=配置选项列表)。                                                                                                                                                                           |
 
 ### 问题反馈
 
