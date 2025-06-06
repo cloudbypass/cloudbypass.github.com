@@ -50,6 +50,8 @@
 | force                                                        | `v2`     | 强制更换代理，避免在穿云 V2 会话期内无法更换代理时返回 `BYPASS_ERROR` 错误。           |
 | [ignore-lock](/zh-cn/request_parameters?id=关于V2 Part并发问题)  | `v2`     | 忽略挑战锁，多个请求同时使用同一个会话时，直接忽略验证挑战锁，避免错误。                |
 | ~~[wait-lock](/zh-cn/request_parameters?id=关于V2 Part并发问题)~~ | `v2`     | ~~等待挑战锁，多个请求同时使用同一个会话时，防止 `CHALLENGE_LOCK_TIMEOUT` 错误。~~       |
+| no-challenge                                                | `v2`     | 遇到验证时拒绝挑战，直接返回错误信息。                                     |
+
 
 ### APIKEY
 
