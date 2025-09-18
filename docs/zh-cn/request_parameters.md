@@ -288,6 +288,7 @@ X-Cb-Protocol: http
     * `chrome`、`chrome-linux`、`chrome-mac`、`chrome127`、`chrome127-linux`、`chrome127-mac`
     * `edge`、`edge-linux`、`edge-mac`、`edge127`、`edge127-linux`、`edge127-mac`
     * `chrome-android`、`edge-android`、`chrome127-android`、`edge127-android`
+    * 支持 `127~139` 所有版本
 
 ### X-Cb-Part
 

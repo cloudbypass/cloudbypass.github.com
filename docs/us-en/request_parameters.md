@@ -59,7 +59,7 @@ List of configuration options for the `x-cb-options` request header:
 | force                                                                               |        `v2`        | Force the proxy change to avoid returning a `BYPASS_ERROR` when the proxy cannot be changed during a Scrapingbypass V2 session.                                           |
 | [ignore-lock](/us-en/request_parameters?id=about-v2-part-mode-concurrency-issues)   |        `v2`        | Ignore challenge lock. When multiple requests use the same session, it will directly ignore the verification challenge lock to avoid errors.                              |
 | ~~[wait-lock](/us-en/request_parameters?id=about-v2-part-mode-concurrency-issues)~~ |        `v2`        | ~~Wait for the challenge lock. When multiple requests use the same session, it prevents the `CHALLENGE_LOCK_TIMEOUT` error.~~                                             |
-| no-challenge                                                                        |        `v2`        | When encountering verification, reject the challenge and directly return an error message.                                                                                     |
+| no-challenge                                                                        |        `v2`        | When encountering verification, reject the challenge and directly return an error message.                                                                                |
 
 ### APIKEY
 
@@ -297,6 +297,7 @@ Set the browser fingerprint used in the request. The following are the supported
     * `chrome`、`chrome-linux`、`chrome-mac`、`chrome127`、`chrome127-linux`、`chrome127-mac`
     * `edge`、`edge-linux`、`edge-mac`、`edge127`、`edge127-linux`、`edge127-mac`
     * `chrome-android`、`edge-android`、`chrome127-android`、`edge127-android`
+    * Support `127~139` versions
 
 ### X-Cb-Part
 
