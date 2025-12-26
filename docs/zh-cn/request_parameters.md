@@ -176,13 +176,13 @@ const axios = require('axios');
 
 const url = "https://api.scrapingbypass.com/category/memberships";
 const headers = {
-    'x-cb-apikey': '/* APIKEY */',
-    'x-cb-host': 'opensea.io',
+  'x-cb-apikey': '/* APIKEY */',
+  'x-cb-host': 'opensea.io',
 };
 
 axios.get(url, {}, {headers: headers})
-    .then(response => console.log(response.data))
-    .catch(error => console.error(error));
+        .then(response => console.log(response.data))
+        .catch(error => console.error(error));
 ```
 
 * **Nodejs SDK**
@@ -192,15 +192,15 @@ axios.get(url, {}, {headers: headers})
 import cloudbypass from 'cloudbypass-sdk';
 
 cloudbypass.get('https://opensea.io/category/memberships', {
-    cb_apikey: '/* APIKEY */'
+  cb_apikey: '/* APIKEY */'
 })
-    .then(function (response) {
-        console.log(response.status, response.headers.get("x-cb-status"));
-        console.log(response.data);
-    })
-    .catch(function (error) {
-        console.log(error.response.data || error.response || error.message);
-    });
+        .then(function (response) {
+          console.log(response.status, response.headers.get("x-cb-status"));
+          console.log(response.data);
+        })
+        .catch(function (error) {
+          console.log(error.response.data || error.response || error.message);
+        });
 ```
 
 #### **Java**
@@ -281,13 +281,13 @@ X-Cb-Protocol: http
 设置请求时使用的浏览器指纹。以下是支持列表
 
 * 穿云V1（默认`chrome`）
-    * `chrome`
-    * `firefox`
-    * `edge`
+  * `chrome`
+  * `firefox`
+  * `edge`
 * 穿云V2（默认`edge-linux`）
-    * `chrome`、`chrome-linux`、`chrome-mac`、`chrome127`、`chrome127-linux`、`chrome127-mac`
-    * `edge`、`edge-linux`、`edge-mac`、`edge127`、`edge127-linux`、`edge127-mac`
-    * `chrome-android`、`edge-android`、`chrome127-android`、`edge127-android`
+  * `chrome`、`chrome-linux`、`chrome-mac`、`chrome127`、`chrome127-linux`、`chrome127-mac`
+  * `edge`、`edge-linux`、`edge-mac`、`edge127`、`edge127-linux`、`edge127-mac`
+  * `chrome-android`、`edge-android`、`chrome127-android`、`edge127-android`
 
 ### X-Cb-Part
 
@@ -431,16 +431,16 @@ const axios = require('axios');
 
 const url = "https://api.cloudbypass.com/accounts/label/lido";
 const headers = {
-    'x-cb-apikey': '/* APIKEY */',
-    'x-cb-host': 'etherscan.io',
-    'x-cb-version': '2',
-    'x-cb-part': '0',
-    'x-cb-proxy': '/* PROXY */',
+  'x-cb-apikey': '/* APIKEY */',
+  'x-cb-host': 'etherscan.io',
+  'x-cb-version': '2',
+  'x-cb-part': '0',
+  'x-cb-proxy': '/* PROXY */',
 };
 
 axios.get(url, {}, {headers: headers})
-    .then(response => console.log(response.data))
-    .catch(error => console.error(error));
+        .then(response => console.log(response.data))
+        .catch(error => console.error(error));
 ```
 
 * **Nodejs SDK**
@@ -450,19 +450,19 @@ axios.get(url, {}, {headers: headers})
 import cloudbypass from 'cloudbypass-sdk';
 
 try {
-    const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
-        cb_apikey: '/* APIKEY */',
-        cb_proxy: '/* PROXY */',
-        cb_part: '0'
-    }));
-    console.log(resp.headers['set-cookie']);
-    console.log(resp.data);
+  const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
+    cb_apikey: '/* APIKEY */',
+    cb_proxy: '/* PROXY */',
+    cb_part: '0'
+  }));
+  console.log(resp.headers['set-cookie']);
+  console.log(resp.data);
 } catch (e) {
-    if (isBypassError(e)) {
-        console.log(e.response.data || e.response || e.message);
-    } else {
-        console.log(e);
-    }
+  if (isBypassError(e)) {
+    console.log(e.response.data || e.response || e.message);
+  } else {
+    console.log(e);
+  }
 }
 ```
 
@@ -627,15 +627,15 @@ const axios = require('axios');
 
 const url = "https://api.cloudbypass.com/accounts/label/lido";
 const headers = {
-    'x-cb-apikey': '/* APIKEY */',
-    'x-cb-host': 'etherscan.io',
-    'x-cb-version': '2',
-    'x-cb-proxy': '/* PROXY */',
+  'x-cb-apikey': '/* APIKEY */',
+  'x-cb-host': 'etherscan.io',
+  'x-cb-version': '2',
+  'x-cb-proxy': '/* PROXY */',
 };
 
 axios.get(url, {}, {headers: headers})
-    .then(response => console.log(response.data))
-    .catch(error => console.error(error));
+        .then(response => console.log(response.data))
+        .catch(error => console.error(error));
 ```
 
 * **Nodejs SDK**
@@ -645,19 +645,19 @@ axios.get(url, {}, {headers: headers})
 import cloudbypass from 'cloudbypass-sdk';
 
 try {
-    const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
-        cb_apikey: '/* APIKEY */',
-        cb_proxy: '/* PROXY */',
-        cb_use_v2: true
-    }));
-    console.log(resp.headers['set-cookie']);
-    console.log(resp.data);
+  const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
+    cb_apikey: '/* APIKEY */',
+    cb_proxy: '/* PROXY */',
+    cb_use_v2: true
+  }));
+  console.log(resp.headers['set-cookie']);
+  console.log(resp.data);
 } catch (e) {
-    if (isBypassError(e)) {
-        console.log(e.response.data || e.response || e.message);
-    } else {
-        console.log(e);
-    }
+  if (isBypassError(e)) {
+    console.log(e.response.data || e.response || e.message);
+  } else {
+    console.log(e);
+  }
 }
 ```
 
@@ -705,13 +705,13 @@ public class Main {
 
 * **`ignore-lock`**  
   忽略验证锁，可以通过请求头 `x-cb-options: ignore-lock` 设置。
-    * **优点**：避免所有锁定错误。
-    * **缺点**：会消耗更多积分、流量和时间。
+  * **优点**：避免所有锁定错误。
+  * **缺点**：会消耗更多积分、流量和时间。
 
 * ~~`wait-lock`~~  
   ~~等待验证锁，可以通过请求头 `x-cb-options: wait-lock` 设置。~~
-    * ~~**优点**：可以避免 [`CHALLENGE_LOCK_OCCUPIED`](/zh-cn/response_data?id=错误代码) 错误，等待验证通过后会直接使用新的 Cookie 完成请求。~~
-    * ~~**缺点**：如果等待时间过长，可能会出现 [`CHALLENGE_LOCK_TIMEOUT`](/zh-cn/response_data?id=错误代码) 错误。~~
+  * ~~**优点**：可以避免 [`CHALLENGE_LOCK_OCCUPIED`](/zh-cn/response_data?id=错误代码) 错误，等待验证通过后会直接使用新的 Cookie 完成请求。~~
+  * ~~**缺点**：如果等待时间过长，可能会出现 [`CHALLENGE_LOCK_TIMEOUT`](/zh-cn/response_data?id=错误代码) 错误。~~
 
 
 ## 关于浏览器跨域的问题

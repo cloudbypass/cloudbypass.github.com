@@ -11,6 +11,8 @@
 
     <!-- Default Theme (see https://docsify.js.org/#/themes) -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         img {
             max-width: 80%;
@@ -32,6 +34,32 @@
             padding: 0 !important;
         }
 
+        .telegram-button {
+            bottom: 81px;
+            display: block; 
+            position: fixed;
+            right: 16px; 
+            width: 60px;
+            height: 60px;
+            background-color: #26A6E7;
+            color: white;
+            text-align: center;
+            line-height: 62px;
+            border-radius: 50%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .telegram-button:hover {
+            background-color: #26a5e4;
+        }
+
+        .telegram-icon, .arrow-icon {
+            font-size: 30px;
+        }
+
     </style>
     <script src="static/docsify-tabs.js"></script>
 </head>
@@ -42,6 +70,10 @@
     <a href="#/zh-cn/quickstart">中文</a>
 </nav>-->
 <div id="app"></div>
+
+<a href="https://t.me/cloudbypasscom" rel="nofollow" target="_blank" id="telegramButton" class="telegram-button" title="Telegram：@cloudbypasscom">
+    <span class="telegram-icon"><i class="fa-solid fa-paper-plane"></i></span>
+</a>
 
 <script>
     // Docsify Configuration (see https://docsify.js.org/#/configuration)
