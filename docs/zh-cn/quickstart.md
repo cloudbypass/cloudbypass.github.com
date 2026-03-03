@@ -36,7 +36,7 @@ API请求。
 
 ```text
 在 OpenClaw 中，请根据以下文档内容配置并调用穿云 API：
-https://docs.cloudbypass.com/#/api-quick-reference
+https://docs.cloudbypass.com/api-quick-reference.md
 ```
 
 # 关于穿云API版本

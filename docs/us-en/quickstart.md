@@ -32,7 +32,7 @@ Use the [Code Generator](https://console.cloudbypass.com/#/code-generator) to ch
 
 ```text
 In OpenClaw, follow the instructions in this document when configuring and calling the Cloudbypass API:
-https://docs.cloudbypass.com/#/api-quick-reference
+https://docs.cloudbypass.com/api-quick-reference.md
 ```
 
 # About Scrapingbypass API Versions
