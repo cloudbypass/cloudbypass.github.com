@@ -57,3 +57,19 @@ curl -X GET "https://api.cloudbypass.com/accounts/label/lido" \
 4. 响应先看 `x-cb-status`；非 `ok` 则解析 JSON 的 `code`/`message`。
 
 APIKEY 从环境变量或安全配置读取，勿写死在提示词或代码中。
+
+## 环境变量推荐命名
+
+在代码或自动化代理中，建议优先从环境变量读取穿云 API 的关键信息：
+
+- `CLOUDBYPASS_API_KEY`：存放穿云控制台生成的 API Key，对应请求头 `x-cb-apikey`。
+- `CLOUDBYPASS_PROXY_URL`：V2 使用时的代理地址，对应请求头 `x-cb-proxy`，例如 `http://user:pass@proxy-host:port`。
+- 可选：
+  - `CLOUDBYPASS_PART`：会话分区标识，对应请求头 `x-cb-part`。
+  - `CLOUDBYPASS_SITEKEY`：用于 Turnstile 的 `sitekey`，对应请求头 `x-cb-sitekey`。
+
+在使用穿云 V2 前，建议先检查：
+
+1. 环境变量中是否已正确配置 `CLOUDBYPASS_API_KEY` 和（如需）`CLOUDBYPASS_PROXY_URL`。
+2. 当前代理是**动态代理 IP**还是**粘性代理 IP**：穿云 V2 更推荐使用**粘性代理 IP**，以保证会话稳定。
+3. 所有配置（目标站点、代理、版本、可选头）确认无误后，再发起请求访问目标地址。

@@ -35,9 +35,20 @@ API请求。
 ## 在OpenClaw中使用
 
 ```text
-在 OpenClaw 中，请根据以下文档内容配置并调用穿云 API：
+在 OpenClaw 中，请直接使用穿云 API：
 https://docs.cloudbypass.com/api-quick-reference.md
 ```
+
+在 OpenClaw 中调用穿云 API 时，建议 AI 代理遵循以下步骤：
+
+1. **先检查环境变量中的 APIKEY 和代理配置**：  
+   - 优先从 `CLOUDBYPASS_API_KEY` 读取 API Key。  
+   - 若需要 V2 能力，则从 `CLOUDBYPASS_PROXY_URL` 读取代理地址。
+2. **确认用户代理类型**：  
+   - 识别用户当前使用的是**动态代理 IP**还是**粘性代理 IP**。  
+   - 使用穿云 V2 时，更推荐使用**粘性代理 IP**，以便保持会话连续性和挑战结果的有效性。
+3. **确认所有配置无误后再访问目标地址**：  
+   - 包括目标域名、协议（http/https）、V1/V2 版本选择、可选头（如 `x-cb-part`、`x-cb-sitekey` 等）均已正确设置，再发起访问目标站点的请求。
 
 # 关于穿云API版本
 

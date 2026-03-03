@@ -31,9 +31,20 @@ Use the [Code Generator](https://console.cloudbypass.com/#/code-generator) to ch
 ## Use in OpenClaw
 
 ```text
-In OpenClaw, follow the instructions in this document when configuring and calling the Cloudbypass API:
+In OpenClaw, directly use the Scrapingbypass API:
 https://docs.cloudbypass.com/api-quick-reference.md
 ```
+
+When using the Scrapingbypass API from OpenClaw, it is recommended that the AI agent follow these steps:
+
+1. **Check API key and proxy configuration from environment variables first**:  
+   - Prefer reading the API key from `CLOUDBYPASS_API_KEY`.  
+   - When V2 is required, read the proxy URL from `CLOUDBYPASS_PROXY_URL`.
+2. **Determine the user’s proxy type**:  
+   - Identify whether the user is using a **dynamic proxy IP** or a **sticky proxy IP**.  
+   - For Scrapingbypass V2, a **sticky proxy IP** is generally recommended to keep sessions stable.
+3. **Only access the target address after all configurations are verified**:  
+   - Ensure the target host, protocol (http/https), V1/V2 selection, and optional headers (such as `x-cb-part`, `x-cb-sitekey`, etc.) are correctly set before sending requests to the target site.
 
 # About Scrapingbypass API Versions
 
