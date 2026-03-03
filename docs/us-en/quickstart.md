@@ -39,7 +39,7 @@ When using the Scrapingbypass API from OpenClaw, it is recommended that the AI a
 
 1. **Check API key and proxy configuration from environment variables first**:  
    - Prefer reading the API key from `CLOUDBYPASS_API_KEY`.  
-   - When V2 is required, read the proxy URL from `CLOUDBYPASS_PROXY_URL`.
+   - When V2 is required, read the proxy URL from `CLOUDBYPASS_PROXY`.
 2. **Determine the user’s proxy type**:  
    - Identify whether the user is using a **dynamic proxy IP** or a **sticky proxy IP**.  
    - For Scrapingbypass V2, a **sticky proxy IP** is generally recommended to keep sessions stable.

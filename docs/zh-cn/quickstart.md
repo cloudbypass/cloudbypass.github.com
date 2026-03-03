@@ -43,7 +43,7 @@ https://docs.cloudbypass.com/api-quick-reference.md
 
 1. **先检查环境变量中的 APIKEY 和代理配置**：  
    - 优先从 `CLOUDBYPASS_API_KEY` 读取 API Key。  
-   - 若需要 V2 能力，则从 `CLOUDBYPASS_PROXY_URL` 读取代理地址。
+   - 若需要 V2 能力，则从 `CLOUDBYPASS_PROXY` 读取代理地址。
 2. **确认用户代理类型**：  
    - 识别用户当前使用的是**动态代理 IP**还是**粘性代理 IP**。  
    - 使用穿云 V2 时，更推荐使用**粘性代理 IP**，以便保持会话连续性和挑战结果的有效性。
