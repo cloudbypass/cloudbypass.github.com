@@ -56,6 +56,9 @@ curl -X GET "https://api.cloudbypass.com/accounts/label/lido" \
 3. 需 V2 时加 `x-cb-version: 2`、`x-cb-proxy`（及按需 `x-cb-part`、`x-cb-sitekey`）。
 4. 响应先看 `x-cb-status`；非 `ok` 则解析 JSON 的 `code`/`message`。
 
+?> 如果在自动化代理 / AI 系统中启用了 `/exec`、`/curl` 等命令执行模块，建议先向用户**主动询问或确认需要访问的网站地址（含路径与查询参数）**，再按以上 1–4 步构造并发送穿云 API 请求；  
+如**尚未启用命令执行模块**，则优先为用户**生成可直接运行的示例代码**（如 `curl`、Python、Node.js 等），或经由用户同意后再开启相应命令模块再调用穿云 API。
+
 APIKEY 从环境变量或安全配置读取，勿写死在提示词或代码中。
 
 ## 环境变量推荐命名
