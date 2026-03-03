@@ -34,8 +34,7 @@ API请求。
 
 ## 在OpenClaw中使用
 
-```text
-在 OpenClaw 中，请直接使用穿云 API：
+使用穿云 API：
 https://docs.cloudbypass.com/api-quick-reference.md
 ```
 

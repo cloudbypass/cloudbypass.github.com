@@ -30,8 +30,7 @@ Use the [Code Generator](https://console.cloudbypass.com/#/code-generator) to ch
 
 ## Use in OpenClaw
 
-```text
-In OpenClaw, directly use the Scrapingbypass API:
+Use the Scrapingbypass API:
 https://docs.cloudbypass.com/api-quick-reference.md
 ```
 
