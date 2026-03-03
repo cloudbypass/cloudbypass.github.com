@@ -28,6 +28,13 @@ Check out the existing [code examples](https://github.com/cloudbypass/example) t
 
 Use the [Code Generator](https://console.cloudbypass.com/#/code-generator) to check if the target website can be bypassed. New users can [contact customer support](https://t.me/cloudbypasscom) for a trial.
 
+## Use in OpenClaw
+
+```text
+In OpenClaw, follow the instructions in this document when configuring and calling the Cloudbypass API:
+https://docs.cloudbypass.com/#/api-quick-reference
+```
+
 # About Scrapingbypass API Versions
 
 ## Scrapingbypass V1

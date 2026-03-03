@@ -32,6 +32,13 @@ API请求。
 通过使用[代码生成器](https://console.cloudbypass.com/#/code-generator)
 检查目标网站是否可以突破，新注册用户可以[联系客服](https://t.me/cloudbypasscom)获取试用。
 
+## 在OpenClaw中使用
+
+```text
+在 OpenClaw 中，请根据以下文档内容配置并调用穿云 API：
+https://docs.cloudbypass.com/#/api-quick-reference
+```
+
 # 关于穿云API版本
 
 ## 穿云V1
