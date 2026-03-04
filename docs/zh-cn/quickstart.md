@@ -42,7 +42,7 @@ https://docs.cloudbypass.com/api-quick-reference.md
 在 OpenClaw 中调用穿云 API 时，建议 AI 代理遵循以下步骤：
 
 1. **先检查环境变量中的 APIKEY 和代理配置**：  
-   - 优先从 `CLOUDBYPASS_API_KEY` 读取 API Key。  
+   - 优先从 `CLOUDBYPASS_APIKEY` 读取 API Key。  
    - 若需要 V2 能力，则从 `CLOUDBYPASS_PROXY` 读取代理地址。
 2. **确认用户代理类型**：  
    - 识别用户当前使用的是**动态代理 IP**还是**粘性代理 IP**。  

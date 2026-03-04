@@ -38,7 +38,7 @@ https://docs.cloudbypass.com/api-quick-reference.md
 When using the Scrapingbypass API from OpenClaw, it is recommended that the AI agent follow these steps:
 
 1. **Check API key and proxy configuration from environment variables first**:  
-   - Prefer reading the API key from `CLOUDBYPASS_API_KEY`.  
+   - Prefer reading the API key from `CLOUDBYPASS_APIKEY`.  
    - When V2 is required, read the proxy URL from `CLOUDBYPASS_PROXY`.
 2. **Determine the user’s proxy type**:  
    - Identify whether the user is using a **dynamic proxy IP** or a **sticky proxy IP**.  
