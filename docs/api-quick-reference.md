@@ -8,7 +8,8 @@
 
 - 程序请求 403、浏览器能打开 → 先用 **V1**；若 V1 失败或返回需挑战（如五秒盾）则改用 **V2**。
 - 已知为 JS 质询 / Turnstile 验证 → 直接用 **V2**（须提供 `x-cb-proxy`）。
-- 用户明确要求用 V1 或 V2 时，按用户要求。
+- 需要 **stream 流式响应**（如大文件下载）→ 使用 **V2s**（`x-cb-version: 2s`，与 V2 一致）。
+- 用户明确要求用 V1、V2 或 V2s 时，按用户要求。
 
 ---
 
@@ -19,7 +20,7 @@
 
 **必填头**：`x-cb-apikey`（密钥，控制台 https://console.cloudbypass.com/#/ 获取）、`x-cb-host`（目标主机，如 `example.com`，不含协议与路径）。
 
-**可选头**：`x-cb-protocol` 默认 https，http 目标填 `http`；V2 时 `x-cb-version: 2`、`x-cb-proxy`（必填）、`x-cb-part`（会话分区）、`x-cb-sitekey`（Turnstile 用）；**需下载文件时使用 `x-cb-version: 2s` 表示 v2 stream**；`x-cb-options` 可填 `long-timeout`、`force`、`ignore-lock` 等逗号分隔。所有 `x-cb-*` 头不会转发到目标站。
+**可选头**：`x-cb-protocol` 默认 https，http 目标填 `http`；V2 时 `x-cb-version: 2`、`x-cb-proxy`（必填）、`x-cb-part`（会话分区）、`x-cb-sitekey`（Turnstile 用）；**穿云 V2s** 使用 `x-cb-version: 2s`，与 V2 一致但支持 **stream 流式响应**（适合大文件/下载）；`x-cb-timeout` 为请求超时秒数（整数，v1/v2s 范围 5–3600、默认 30，v2 范围 5–360、默认 15），优先级高于 `x-cb-options` 中的 ~~`long-timeout`~~（可能后续废弃）；`x-cb-options` 可填 ~~`long-timeout`~~、`force`、`ignore-lock` 等逗号分隔。所有 `x-cb-*` 头不会转发到目标站。
 
 **方法 / Body / 其它头**：与原请求一致。
 
@@ -53,7 +54,7 @@ curl -X GET "https://api.cloudbypass.com/accounts/label/lido" \
 
 1. URL 改为 `https://api.cloudbypass.com` + 原路径（含查询）。
 2. 加头 `x-cb-apikey`、`x-cb-host`；http 目标加 `x-cb-protocol: http`。
-3. 需 V2 时加 `x-cb-version: 2`、`x-cb-proxy`（及按需 `x-cb-part`、`x-cb-sitekey`）；**需下载文件时使用 `x-cb-version: 2s`**（v2 stream）。
+3. 需 V2 时加 `x-cb-version: 2`、`x-cb-proxy`（及按需 `x-cb-part`、`x-cb-sitekey`）；需 **stream 流式响应**时使用 **V2s**：`x-cb-version: 2s`。
 4. 响应先看 `x-cb-status`；非 `ok` 则解析 JSON 的 `code`/`message`。
 
 ?> 如果在自动化代理 / AI 系统中启用了 `/exec`、`/curl` 等命令执行模块，建议先向用户**主动询问或确认需要访问的网站地址（含路径与查询参数）**，再按以上 1–4 步构造并发送穿云 API 请求；  

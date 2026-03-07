@@ -48,7 +48,7 @@ https://docs.cloudbypass.com/api-quick-reference.md
    - 识别用户当前使用的是**动态代理 IP**还是**粘性代理 IP**。  
    - 使用穿云 V2 时，更推荐使用**粘性代理 IP**，以便保持会话连续性和挑战结果的有效性。
 3. **确认所有配置无误后再访问目标地址**：  
-   - 包括目标域名、协议（http/https）、V1/V2 版本选择、可选头（如 `x-cb-part`、`x-cb-sitekey` 等）均已正确设置，再发起访问目标站点的请求。
+   - 包括目标域名、协议（http/https）、V1/V2/V2s 版本选择、可选头（如 `x-cb-part`、`x-cb-sitekey`、`x-cb-timeout` 等）均已正确设置，再发起访问目标站点的请求。
 
 # 关于穿云API版本
 
@@ -65,6 +65,10 @@ https://docs.cloudbypass.com/api-quick-reference.md
 ![turnstile.png](img%2Fturnstile.gif ":no-zoom :size=350")
 
 ?> 穿云V2必须提供固定或具有时效性的IP代理才能运作。
+
+## 穿云V2s
+
+穿云 V2s 与 V2 一致，但支持 **stream 流式响应**，适合大文件下载或需要边下边处理的场景。使用方式：请求头 `x-cb-version: 2s`，其余参数同 V2（如 `x-cb-proxy`、`x-cb-part` 等）。
 
 ### 如何区分两种验证？
 

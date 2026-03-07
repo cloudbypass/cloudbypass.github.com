@@ -31,12 +31,13 @@
 | [x-cb-protocol](/zh-cn/request_parameters?id=x-cb-host、x-cb-protocol) | `string` | "https"                        | `所有版本` |      | 请求协议，例如：`http`、`https`。                                        |
 | [x-cb-fp](/zh-cn/request_parameters?id=X-Cb-Fp)                       | `string` | [版本区分](/zh-cn/request_parameters?id=x-cb-fp) | `v1`     |      | 客户端指纹。                                                           |
 | [x-cb-proxy](/zh-cn/request_parameters?id=X-Cb-Proxy)                 | `string` |                                | `所有版本` |      | 自定义代理地址，可以是 IP 或域名。支持 `http`、`socks5` 协议。          |
-| x-cb-version                                                          | `string` |                                | `所有版本` |      | 使用穿云 V2 时，该请求头值应为 `2`。                                    |
-| [x-cb-part](/zh-cn/request_parameters?id=X-Cb-Part)                   | `integer`|                                | `v2`     |      | 该请求头仅在穿云 V2 时有效，用于区分不同的会话，最多可有 1000 个会话分区。|
+| x-cb-version                                                          | `string` |                                | `所有版本` |      | 使用穿云 V2 时填 `2`；使用穿云 V2s（与 V2 一致但支持 stream 流式响应）时填 `2s`。 |
+| [x-cb-part](/zh-cn/request_parameters?id=X-Cb-Part)                   | `integer`|                                | `v2`/`v2s` |      | 该请求头仅在穿云 V2/V2s 时有效，用于区分不同的会话，最多可有 1000 个会话分区。|
 | [x-cb-origin](/zh-cn/request_parameters?id=关于浏览器跨域的问题)        | `string` |                                | `所有版本` |      | 替换请求头中的 `origin` 字段，常用于跨域请求绕过 CORS 限制。           |
 | [x-cb-referer](/zh-cn/request_parameters?id=关于浏览器跨域的问题)       | `string` |                                | `所有版本` |      | 替换请求头中的 `referer` 字段，常用于跨域请求绕过 CORS 限制。          |
 | x-cb-cookie                                                           | `string` |                                | `所有版本` |      | 替换请求头中的 `cookie` 字段，常用于跨域请求绕过 CORS 限制。           |
-| [x-cb-sitekey](/zh-cn/request_parameters?id=如何获取sitekey)            | `string` |                                | `v2`     |      | 填写后触发 `Turnstile` 小部件验证，验证结果将自动填充后续请求。          |
+| [x-cb-sitekey](/zh-cn/request_parameters?id=如何获取sitekey)            | `string` |                                | `v2`/`v2s` |      | 填写后触发 `Turnstile` 小部件验证，验证结果将自动填充后续请求。          |
+| x-cb-timeout                                                          | `integer`| v1/v2s 默认 30，v2 默认 15     | `所有版本` |      | 请求超时秒数。v1、v2s 范围 5–3600；v2 范围 5–360。仅支持整数。优先级高于 `x-cb-options` 中的 `long-timeout`。 |
 | [x-cb-options](/zh-cn/request_parameters?id=配置选项列表)               | `string` |                                | `所有版本` |      | 配置选项列表，支持多个选项，逗号分隔。详细配置请查看 [配置选项列表](/zh-cn/request_parameters?id=配置选项列表)。 |
 
 ### 配置选项列表
@@ -46,7 +47,7 @@
 | 参数                                                           | 支持版本  | 描述                                                                                 |
 |--------------------------------------------------------------|:--------:|------------------------------------------------------------------------------------|
 | disable-redirect                                             | `所有版本` | 禁用重定向，遇到 300-399 响应码时会返回完整内容，包括 `Set-Cookie`。（默认自动处理重定向） |
-| long-timeout                                                 | `v2`     | 延长超时，默认超时为 15 秒，目标服务器响应慢时可通过此参数延长至 60 秒。               |
+| ~~long-timeout~~                                              | `v2`     | ~~延长超时。~~ 建议使用请求头 `x-cb-timeout`（优先级更高）。此选项可能后续废弃。     |
 | force                                                        | `v2`     | 强制更换代理，避免在穿云 V2 会话期内无法更换代理时返回 `BYPASS_ERROR` 错误。           |
 | [ignore-lock](/zh-cn/request_parameters?id=关于V2 Part并发问题)  | `v2`     | 忽略挑战锁，多个请求同时使用同一个会话时，直接忽略验证挑战锁，避免错误。                |
 | ~~[wait-lock](/zh-cn/request_parameters?id=关于V2 Part并发问题)~~ | `v2`     | ~~等待挑战锁，多个请求同时使用同一个会话时，防止 `CHALLENGE_LOCK_TIMEOUT` 错误。~~       |

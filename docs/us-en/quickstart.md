@@ -44,7 +44,7 @@ When using the Scrapingbypass API from OpenClaw, it is recommended that the AI a
    - Identify whether the user is using a **dynamic proxy IP** or a **sticky proxy IP**.  
    - For Scrapingbypass V2, a **sticky proxy IP** is generally recommended to keep sessions stable.
 3. **Only access the target address after all configurations are verified**:  
-   - Ensure the target host, protocol (http/https), V1/V2 selection, and optional headers (such as `x-cb-part`, `x-cb-sitekey`, etc.) are correctly set before sending requests to the target site.
+   - Ensure the target host, protocol (http/https), V1/V2/V2s selection, and optional headers (such as `x-cb-part`, `x-cb-sitekey`, `x-cb-timeout`, etc.) are correctly set before sending requests to the target site.
 
 # About Scrapingbypass API Versions
 
@@ -61,6 +61,10 @@ Scrapingbypass V1 comes with a built-in dynamic proxy. You can also set up your 
 ![turnstile.png](img%2Fturnstile.gif ":no-zoom :size=350")
 
 ?> Scrapingbypass V2 requires a fixed or time-sensitive IP proxy to operate.
+
+## Scrapingbypass V2s
+
+Scrapingbypass V2s is the same as V2 but supports **stream response**, suitable for large file downloads or when you need to process data as it streams. Usage: set request header `x-cb-version: 2s`; all other parameters are the same as V2 (e.g. `x-cb-proxy`, `x-cb-part`).
 
 ### How to Distinguish Between Two Verifications?
 
