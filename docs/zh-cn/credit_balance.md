@@ -26,14 +26,10 @@ curl -s -X POST "https://console.cloudbypass.com/api/v1/balance" \
   -d '{"apikey":"<APIKEY>","email":"<EMAIL>","type":"res"}'
 ```
 
-**GET 接口已废弃**
-
-原先使用 **GET** 并在 URL 中附带 `?apikey=<APIKEY>&email=<email>` 的用法**已废弃**，不再推荐使用；请改用 **POST + JSON body**（含 `type`）。若仍在使用 GET，请尽快迁移，以免影响后续调用。
+**GET 接口已废弃**：原先使用 **GET** 并在 URL 中附带 `?apikey=<APIKEY>&email=<email>` 的用法**已废弃**，不再推荐使用；请改用 **POST + JSON body**（含 `type`）。若仍在使用 GET，请尽快迁移，以免影响后续调用。
 
 ### 通过 SDK
 
 * [Python](/zh-cn/python_sdk?id=查询余额)
 * [Nodejs](/zh-cn/nodejs_sdk?id=查询余额)
 * [Go](/zh-cn/golang_sdk?id=查询余额)
-
-更完整的字段说明与流量字节格式化（SDK 辅助函数）见主仓库 **`docs/console-balance-api.md`**。

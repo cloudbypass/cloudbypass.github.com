@@ -35,5 +35,3 @@ The old **GET** call with query string `?apikey=<APIKEY>&email=<email>` is **dep
 * [Python](/us-en/python_sdk?id=check-balance)
 * [Nodejs](/us-en/nodejs_sdk?id=check-balance)
 * [Go](/us-en/golang_sdk?id=check-balance)
-
-For full field notes and byte-formatting helpers, see **`docs/console-balance-api.md`** in the main cloudbypass repository.
