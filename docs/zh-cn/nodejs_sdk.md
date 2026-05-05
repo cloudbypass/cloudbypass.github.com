@@ -1,5 +1,7 @@
 # Nodejs SDK
 
+### 开始使用
+
 > Cloudbypass Nodejs SDK 依赖于 [Axios](https://axios-http.com/)。
 
 保留axios的所有请求配置，并支持**⚠跨域请求**和Cookie管理。
@@ -55,12 +57,13 @@ import cloudbypass from 'cloudbypass-sdk';
 `config`参数支持所有`axios`的请求配置，并支持以下配置：
 
 - `cb_apikey` API密钥;
-- `cb_use_v2` 使用V2，默认`false`;
+- `cb_version` API版本，支持 `'1'`、`'2'`、`'2s'`，默认为 `'1'`;
+- `cb_use_v2` 使用V2（已废弃，建议使用 `cb_version: '2'` 替代）;
 - `cb_part` 使用V2，并且使用part模式;
 - `cb_proxy` 代理地址，支持http和socks5代理;
 - `cb_apihost` 定制用户可以使用自己的API服务器;
 
-> 以上参数可使用环境变量`CB_APIKEY`、`CB_PROXY`和`CB_APIHOST`进行配置。
+> 以上参数可使用环境变量进行配置。环境变量优先级：优先读取 `CLOUDBYPASS_APIKEY` 和 `CLOUDBYPASS_PROXY`，如果为空，再读取 `CB_APIKEY` 和 `CB_PROXY`。`CB_APIHOST` 用于配置API服务器地址。
 
 ```js
 import cloudbypass from 'cloudbypass-sdk';
@@ -84,39 +87,97 @@ cloudbypass.get('https://opensea.io/category/memberships', {
 穿云API V2适用于需要通过JS质询验证的网站。例如访问https://etherscan.io/accounts/label/lido ，请求示例：
 
 ```js
-import cloudbypass from 'cloudbypass';
+import cloudbypass, {isBypassError} from 'cloudbypass-sdk';
 // Using Node.js `require()`
-// const cloudbypass = require('cloudbypass');
+// const cloudbypass = require('cloudbypass-sdk');
 
-cloudbypass.get('https://etherscan.io/accounts/label/lido', {
-    cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
-    cb_part: '0',
-    cb_proxy: 'http://proxy:port'
-})
-    .then(function (response) {
-        console.log(response.status, response.headers.get("x-cb-status"));
-        console.log(response.data);
-    })
-    .catch(function (error) {
-        console.log(error.response.data || error.response || error.message);
-    });
+// Cookie模式：服务端返回加密Cookie，下次请求时由客户端发送验证Cookie
+// 推荐使用 cb_version: '2'
+try {
+    const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
+        cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        cb_proxy: 'http://proxy:port',
+        cb_version: '2'
+    }));
+    console.log(resp.headers['set-cookie']);
+    console.log(resp.data);
+} catch (e) {
+    if (isBypassError(e)) {
+        console.log(e.response.data || e.response || e.message);
+    } else {
+        console.log(e);
+    }
+}
+
+// 使用 cb_version: '2s' 可以启用更快的V2模式
+try {
+    const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
+        cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        cb_proxy: 'http://proxy:port',
+        cb_version: '2s'
+    }));
+    console.log(resp.data);
+} catch (e) {
+    if (isBypassError(e)) {
+        console.log(e.response.data || e.response || e.message);
+    } else {
+        console.log(e);
+    }
+}
+
+// Part模式：由服务端管理验证Cookie，客户端只需要控制part参数
+try {
+    const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
+        cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        cb_proxy: 'http://proxy:port',
+        cb_part: '0'
+    }));
+    console.log(resp.status, resp.headers.get("x-cb-status"));
+    console.log(resp.data);
+} catch (e) {
+    if (isBypassError(e)) {
+        console.log(e.response.data || e.response || e.message);
+    } else {
+        console.log(e);
+    }
+}
+
+// 注意：cb_use_v2 已废弃，但仍可使用（向后兼容）
+// 建议使用 cb_version: '2' 替代
+try {
+    const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
+        cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        cb_proxy: 'http://proxy:port',
+        cb_use_v2: true  // 已废弃，建议使用 cb_version: '2'
+    }));
+    console.log(resp.data);
+} catch (e) {
+    if (isBypassError(e)) {
+        console.log(e.response.data || e.response || e.message);
+    } else {
+        console.log(e);
+    }
+}
 ```
 
 ### 查询余额
 
-使用`getBalance`方法可以查询当前账户余额。
+使用 `getBalance` 调用控制台接口 `POST https://console.cloudbypass.com/api/v1/balance`，请求体为 JSON。第三参数为 `{ type }`，可使用导出常量 `BALANCE_TYPE_POINTS`（默认，积分）、`BALANCE_TYPE_RES`（住宅流量）、`BALANCE_TYPE_DAT`（机房流量）；住宅/机房返回 `{ total, balance }`（字节），积分返回 `{ balance }`。
 
 ```js
-import cloudbypass from 'cloudbypass-sdk';
-// Using Node.js `require()`
-// const cloudbypass = require('cloudbypass-sdk');
+import cloudbypass, {
+    BALANCE_TYPE_DAT,
+    BALANCE_TYPE_POINTS,
+    BALANCE_TYPE_RES,
+} from 'cloudbypass-sdk';
 
-cloudbypass.getBalance("/* APIKEY */", "/* EMAIL */").then(balance => {
-    console.log(balance);
-}).catch(err => {
-    console.log(err);
-})
+cloudbypass.getBalance('/* APIKEY */', '/* EMAIL */').then((data) => console.log(data));
+cloudbypass.getBalance('/* APIKEY */', '/* EMAIL */', { type: BALANCE_TYPE_RES }).then((data) => {
+    console.log(data.total, data.balance);
+});
 ```
+
+`convertBytes` 可将字节数格式化为可读字符串。例如 `convertBytes(data.balance)`。
 
 ### 提取代理
 

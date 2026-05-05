@@ -1,18 +1,16 @@
 # Nodejs SDK
 
-> Cloudbypass Nodejs SDK depends on [Axios](https://axios-http.com/).
+### Getting Started
 
-Keep all request configurations of axios and support **⚠cross-domain requests** and Cookie management.
+> Cloudbypass Node.js SDK depends on [Axios](https://axios-http.com/).
 
-The CloudCross SDK, which is encapsulated on the basis of `psf/requests`, supports the call of Scrapingbypass API service. Through the built-in session manager, session requests can be automatically processed without manually managing information such as cookies.
+All Axios options are supported, plus cross-origin requests and cookie handling.
 
 [![npm version](https://img.shields.io/npm/v/cloudbypass-sdk.svg?style=flat-square)](https://www.npmjs.org/package/cloudbypass-sdk ":no-zoom")
 [![install size](https://img.shields.io/badge/dynamic/json?url=https://packagephobia.com/v2/api.json?p=cloudbypass-sdk&query=$.install.pretty&label=install%20size&style=flat-square)](https://packagephobia.now.sh/result?p=cloudbypass-sdk ":no-zoom")
 [![npm bundle size](https://img.shields.io/bundlephobia/minzip/cloudbypass-sdk?style=flat-square)](https://bundlephobia.com/package/cloudbypass-sdk@latest ":no-zoom")
 
-### Install
-
-#### Package Manager Installation
+### Installation
 
 Using npm:
 
@@ -34,38 +32,31 @@ $ pnpm add cloudbypass-sdk
 
 ### Usage
 
-Once the package is installed, you can import the library using the require method:
-
 ```js
-// Using Node.js `require()`
 const cloudbypass = require('cloudbypass-sdk');
 ```
 
-Or, if you're using ES modules:
+ES modules:
 
 ```js
-// Using ES6 imports
 import cloudbypass from 'cloudbypass-sdk';
 ```
 
-### Make a Request
+### Making Requests
 
-After importing `cloudbypass-sdk`, you can use it similarly to `axios`.
+Treat `cloudbypass-sdk` like Axios. Extra config fields:
 
-The `config` parameter supports all `axios` request configurations, along with the following additional configurations:
+- `cb_apikey` — API key;
+- `cb_version` — `'1'`, `'2'`, or `'2s'` (default `'1'`);
+- `cb_use_v2` — deprecated; prefer `cb_version: '2'`;
+- `cb_part` — V2 part mode;
+- `cb_proxy` — HTTP or SOCKS5 proxy;
+- `cb_apihost` — custom API host;
 
-- `cb_apikey`: API key;
-- `cb_use_v2`: Use V2 mode, default is `false`;
-- `cb_part`: Use V2 and enable part mode;
-- `cb_proxy`: Proxy address, supports both http and socks5 proxies;
-- `cb_apihost`: Custom users can use their own API server;
-
-> The above parameters can be configured using environment variables `CB_APIKEY`, `CB_PROXY`, and `CB_APIHOST`.
+> Env vars: `CLOUDBYPASS_APIKEY` / `CLOUDBYPASS_PROXY` first, then `CB_APIKEY` / `CB_PROXY`. `CB_APIHOST` for API server.
 
 ```js
 import cloudbypass from 'cloudbypass-sdk';
-// Using Node.js `require()`
-// const cloudbypass = require('cloudbypass-sdk'); 
 
 cloudbypass.get('https://opensea.io/category/memberships', {
     cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
@@ -81,19 +72,16 @@ cloudbypass.get('https://opensea.io/category/memberships', {
 
 ### Using V2
 
-Scrapingbypass API V2 is suitable for websites that need to pass JS challenge verification. For example, visit https://etherscan.io/accounts/label/lido and request an example:
+For JS challenges, e.g. https://etherscan.io/accounts/label/lido :
 
 ```js
-import cloudbypass from 'cloudbypass';
-// Using Node.js `require()`
-// const cloudbypass = require('cloudbypass');
+import cloudbypass, {isBypassError} from 'cloudbypass-sdk';
 
-// Cookie mode: The server returns an encrypted cookie, which is sent by the client for authentication in the next request.
 try {
     const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
         cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
         cb_proxy: 'http://proxy:port',
-        cb_use_v2: true
+        cb_version: '2'
     }));
     console.log(resp.headers['set-cookie']);
     console.log(resp.data);
@@ -105,7 +93,21 @@ try {
     }
 }
 
-// Part mode: The server manages the authentication cookie, and the client only needs to control the part parameter.
+try {
+    const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
+        cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        cb_proxy: 'http://proxy:port',
+        cb_version: '2s'
+    }));
+    console.log(resp.data);
+} catch (e) {
+    if (isBypassError(e)) {
+        console.log(e.response.data || e.response || e.message);
+    } else {
+        console.log(e);
+    }
+}
+
 try {
     const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
         cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
@@ -121,60 +123,66 @@ try {
         console.log(e);
     }
 }
+
+try {
+    const resp = (await cloudbypass.get("https://etherscan.io/accounts/label/lido", {
+        cb_apikey: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx',
+        cb_proxy: 'http://proxy:port',
+        cb_use_v2: true
+    }));
+    console.log(resp.data);
+} catch (e) {
+    if (isBypassError(e)) {
+        console.log(e.response.data || e.response || e.message);
+    } else {
+        console.log(e);
+    }
+}
 ```
 
 ### Check balance
 
-Use the `getBalance` method to query the current account balance.
+`getBalance` calls `POST https://console.cloudbypass.com/api/v1/balance` with JSON. Pass `{ type }` as third argument (`BALANCE_TYPE_POINTS`, `BALANCE_TYPE_RES`, `BALANCE_TYPE_DAT`). Traffic types return `{ total, balance }` in bytes; credits return `{ balance }`.
 
 ```js
-import cloudbypass from 'cloudbypass-sdk';
-// Using Node.js `require()`
-// const cloudbypass = require('cloudbypass-sdk');
+import cloudbypass, {
+    BALANCE_TYPE_DAT,
+    BALANCE_TYPE_POINTS,
+    BALANCE_TYPE_RES,
+} from 'cloudbypass-sdk';
 
-cloudbypass.getBalance("/* APIKEY */", "/* EMAIL */").then(balance => {
-    console.log(balance);
-}).catch(err => {
-    console.log(err);
-})
+cloudbypass.getBalance('/* APIKEY */', '/* EMAIL */').then((data) => console.log(data));
+cloudbypass.getBalance('/* APIKEY */', '/* EMAIL */', { type: BALANCE_TYPE_RES }).then((data) => {
+    console.log(data.total, data.balance);
+});
 ```
 
-### Extraction Proxy
+`convertBytes` formats byte values for display, e.g. `convertBytes(data.balance)`.
 
-The `cloudbypass.createProxy(auth: string)` method can be used to create a `CloudbypassProxy` instance, which can extract the cloud-piercing dynamic proxy IP and time-sensitive proxy IP.
+### Extracting proxies
 
-+ `copy()` Duplicate the proxy instance so that the original proxy instance is not affected.
-+ `setDynamic()` Set as dynamic proxy.
-+ `setExpire(expire: number)` Set to time-limited proxy, the parameter is the IP expiration time, in seconds.
-+ `setRegion(region: string)` Set the proxy IP region.
-+ `clearRegion()` Clear the area of the agent.
-+ `toString()` Returns the proxy IP string.
-+ `format(format_str?: string)` Format proxy IP. The parameter is a formatted string, for example: `username:password@gateway`.
-+ `limit(count: number, format_str?: string)` Returns a proxy IP string iterator, with the parameters being the extraction quantity and the proxy format string.
-+ `loop(count: number, format_str?: string)` Returns a proxy IP string loop iterator, the parameters are the actual number and the proxy format string.
+`cloudbypass.createProxy(auth)` returns a `CloudbypassProxy` instance.
+
++ `copy()`, `setDynamic()`, `setExpire`, `setRegion`, `clearRegion`, `toString`, `format`, `limit`, `loop` — see README behavior.
 
 ```js
 import cloudbypass from 'cloudbypass-sdk';
 
 const proxy = cloudbypass.createProxy("username-res:password");
 
-// Extracting dynamic proxies
 console.log("Extract dynamic proxy: ")
 console.log(proxy.setDynamic().toString())
 console.log(proxy.setRegion("US").toString())
 
-// Extract time agent and specify region
 console.log("Extract proxy with expire and region: ")
 console.log(proxy.copy().setExpire(60 * 30).setRegion("US").toString())
 
-// Batch Extraction
 console.log("Extract five 10-minute aging proxies: ")
 const pool = proxy.copy().setExpire(60 * 10).limit(5);
 for (let p of pool) {
     console.log(p)
 }
 
-// Cycle Extraction
 console.log("Loop two 10-minute aging proxies: ")
 const loop = proxy.copy().setExpire(60 * 10).loop(2);
 for (let i = 0; i < 10; i++) {
@@ -182,7 +190,6 @@ for (let i = 0; i < 10; i++) {
 }
 ```
 
-### About Redirection Issues
+### About redirects
 
-When making requests with the SDK, redirection is automatically handled, and manual handling is not required. Redirect
-responses will also consume credits.
+Redirects are handled automatically; redirect responses still consume credits.

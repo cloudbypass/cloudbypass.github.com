@@ -1,5 +1,7 @@
 # Golang SDK
 
+### 开始使用
+
 > 继承 [go-resty/resty#supported-go-versions](https://github.com/go-resty/resty#supported-go-versions) v2支持的Go版本
 
 
@@ -7,10 +9,6 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/cloudbypass/golang-sdk)](https://goreportcard.com/report/github.com/cloudbypass/golang-sdk ":no-zoom")
 
 在`go-resty/resty.v2`基础上封装的穿云SDK。
-
-[![npm version](https://img.shields.io/npm/v/cloudbypass-sdk.svg?style=flat-square)](https://www.npmjs.org/package/cloudbypass-sdk ":no-zoom")
-[![install size](https://img.shields.io/badge/dynamic/json?url=https://packagephobia.com/v2/api.json?p=cloudbypass-sdk&query=$.install.pretty&label=install%20size&style=flat-square)](https://packagephobia.now.sh/result?p=cloudbypass-sdk ":no-zoom")
-[![npm bundle size](https://img.shields.io/bundlephobia/minzip/cloudbypass-sdk?style=flat-square)](https://bundlephobia.com/package/cloudbypass-sdk@latest ":no-zoom")
 
 ### 安装
 
@@ -132,7 +130,9 @@ func main() {
 
 ### 查询余额
 
-使用`GetBalance`方法可以查询当前账户余额。
+`GetBalance` 请求控制台 `POST https://console.cloudbypass.com/api/v1/balance`（JSON 体）。第三参数为 `type`：使用 `BalanceTypePoints`（默认，空字符串时）、`BalanceTypeRes`（住宅流量）、`BalanceTypeDat`（机房流量）。返回 `*BalanceResult`；住宅/机房含 `Total` 与 `Balance`（字节），积分仅 `Balance`。
+
+`ConvertBytes` 将字节数格式化为可读字符串，例如搭配 `data.Balance` 使用。
 
 ```go
 package main
@@ -143,14 +143,20 @@ import (
 )
 
 func main() {
-	balance, err := cloudbypass.GetBalance( "/* APIKEY */", "/* EMAIL */")
-
+	points, err := cloudbypass.GetBalance("/* APIKEY */", "/* EMAIL */", cloudbypass.BalanceTypePoints)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+	fmt.Println("points balance:", points.Balance)
 
-	fmt.Println("Balance:", balance)
+	res, err := cloudbypass.GetBalance("/* APIKEY */", "/* EMAIL */", cloudbypass.BalanceTypeRes)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	s, _ := cloudbypass.ConvertBytes(res.Balance, "G")
+	fmt.Println("res total / balance bytes:", res.Total, res.Balance, s)
 }
 
 ```

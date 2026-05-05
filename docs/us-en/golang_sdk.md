@@ -1,18 +1,15 @@
 # Golang SDK
 
-> Inherits [go-resty/resty#supported-go-versions](https://github.com/go-resty/resty#supported-go-versions) v2 Supported
-> Go versions
+### Getting Started
+
+> Supports Go versions listed under [go-resty/resty#supported-go-versions](https://github.com/go-resty/resty#supported-go-versions).
 
 [![GoDoc](https://godoc.org/github.com/cloudbypass/golang-sdk?status.svg)](https://godoc.org/github.com/cloudbypass/golang-sdk ":no-zoom")
 [![Go Report Card](https://goreportcard.com/badge/github.com/cloudbypass/golang-sdk)](https://goreportcard.com/report/github.com/cloudbypass/golang-sdk ":no-zoom")
 
-The Cloud SDK encapsulated based on `go-resty/resty.v2`.
+Built on `go-resty/resty/v2`.
 
-[![npm version](https://img.shields.io/npm/v/cloudbypass-sdk.svg?style=flat-square)](https://www.npmjs.org/package/cloudbypass-sdk ":no-zoom")
-[![install size](https://img.shields.io/badge/dynamic/json?url=https://packagephobia.com/v2/api.json?p=cloudbypass-sdk&query=$.install.pretty&label=install%20size&style=flat-square)](https://packagephobia.now.sh/result?p=cloudbypass-sdk ":no-zoom")
-[![npm bundle size](https://img.shields.io/bundlephobia/minzip/cloudbypass-sdk?style=flat-square)](https://bundlephobia.com/package/cloudbypass-sdk@latest ":no-zoom")
-
-### Install
+### Installation
 
 ```bash
 // Go Modules
@@ -22,20 +19,14 @@ require github.com/cloudbypass/golang-sdk latest
 ### Usage
 
 ```go
-// Import package cloudbypass
 import cloudbypass "github.com/cloudbypass/golang-sdk"
 ```
 
-### Make a Request
+### Making Requests
 
-Create a new `resty.Client` instance using `cloudbypass.New()`.
+Create a client with `cloudbypass.New()`. Use `BypassConfig` fields `Apikey`, `Proxy`, `ApiHost`, etc.
 
-Added initialization parameters `apikey` and `proxy` to set the Scrapingbypass API service key and proxy IP
-respectively.
-
-Custom users can specify the service address by setting the `api_host` parameter.
-
-> The above parameters can be configured using the environment variables `CB_APIKEY`, `CB_PROXY`, and `CB_APIHOST`.
+> Configure via `CB_APIKEY`, `CB_PROXY`, and `CB_APIHOST` when needed.
 
 ```go
 package main
@@ -66,8 +57,7 @@ func main() {
 
 ### Using V2
 
-Scrapingbypass API V2 is suitable for websites that need to pass JS challenge verification. For example,
-visit https://etherscan.io/accounts/label/lido and request an example:
+For JS challenges, e.g. https://etherscan.io/accounts/label/lido :
 
 ```go
 package main
@@ -78,7 +68,6 @@ import (
 )
 
 func main() {
-	// Cookie mode: The server returns an encrypted cookie, which is sent by the client for authentication in the next request.
 	client := cloudbypass.New(cloudbypass.BypassConfig{
 		Apikey: "/* APIKEY */",
 		Proxy:  "/* PROXY */",
@@ -110,7 +99,6 @@ import (
 )
 
 func main() {
-	// Part mode: The server manages the authentication cookie, and the client only needs to control the part parameter.
 	client := cloudbypass.New(cloudbypass.BypassConfig{
 		Apikey: "/* APIKEY */",
 		Proxy:  "/* PROXY */",
@@ -134,7 +122,9 @@ func main() {
 
 ### Check balance
 
-Use the `GetBalance` method to query the current account balance.
+`GetBalance` calls `POST https://console.cloudbypass.com/api/v1/balance` with JSON. Third argument is `type`: `BalanceTypePoints` (default when empty), `BalanceTypeRes`, `BalanceTypeDat`. Returns `*BalanceResult`; traffic responses include `Total` and `Balance` in bytes.
+
+`ConvertBytes` formats bytes for display, e.g. with `Balance`.
 
 ```go
 package main
@@ -145,33 +135,29 @@ import (
 )
 
 func main() {
-	balance, err := cloudbypass.GetBalance( "/* APIKEY */", "/* EMAIL */")
-
+	points, err := cloudbypass.GetBalance("/* APIKEY */", "/* EMAIL */", cloudbypass.BalanceTypePoints)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+	fmt.Println("points balance:", points.Balance)
 
-	fmt.Println("Balance:", balance)
+	res, err := cloudbypass.GetBalance("/* APIKEY */", "/* EMAIL */", cloudbypass.BalanceTypeRes)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	s, _ := cloudbypass.ConvertBytes(res.Balance, "G")
+	fmt.Println("res total / balance bytes:", res.Total, res.Balance, s)
 }
 
 ```
 
-### Extraction Proxy
+### Extracting proxies
 
-Create a CloudPiercing proxy instance through the `NewProxy` method, which can extract the CloudPiercing dynamic proxy
-IP and time-sensitive proxy IP.
+Use `NewProxy` to create a proxy extractor instance.
 
-+ `Copy()` Duplicate the proxy instance so that the original proxy instance is not affected.
-+ `SetDynamic()` Set as dynamic proxy.
-+ `SetExpire(expire int)` Set to time-limited proxy, the parameter is the IP expiration time, in seconds.
-+ `SetRegion(region string)` Set the proxy IP region.
-+ `String()` Returns the proxy IP string.
-+ `StringFormat(format string)` Format proxy IP. The parameter is a formatted string, for
-  example, `username:password@gateway`.
-+ `SetFormat(format string)` Set the proxy IP format string.
-+ `Iterate(count int)` Returns an iterator of proxy IP instances, with the parameter being the number of extractions.
-+ `Loop(count int)` Returns a proxy IP instance loop iterator, with the parameter being the actual number.
++ `Copy`, `SetDynamic`, `SetExpire`, `SetRegion`, `String`, `StringFormat`, `SetFormat`, `Iterate`, `Loop` — same behavior as README.
 
 ```go
 package main
@@ -189,23 +175,19 @@ func main() {
 		return
 	}
 
-	// Extracting dynamic proxies
 	fmt.Println("Extract dynamic proxy: ")
 	fmt.Println(proxy.SetDynamic().String())
 	fmt.Println(proxy.SetRegion("US").String())
 
-	// Extract time agent and specify region
 	fmt.Println("Extract proxy with expire and region: ")
 	fmt.Println(proxy.SetExpire(60 * 10).SetRegion("US").String())
 
-	// Batch Extraction
 	fmt.Println("Extract five 10-minute aging proxies: ")
 	iterator := proxy.SetExpire(60 * 10).SetRegion("US").SetFormat("username:password:gateway").Iterate(10)
 	for iterator.HasNext() {
 		fmt.Println(iterator.Next())
 	}
 
-	// Cycle Extraction
 	fmt.Println("Loop two 10-minute aging proxies: ")
 	loop := proxy.SetExpire(60 * 10).SetRegion("US").Loop(2)
 	for i := 0; i < 10; i++ {
