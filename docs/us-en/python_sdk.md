@@ -115,9 +115,9 @@ replaced by JSON fields).
 
 Use keyword argument `type` (or constants `BALANCE_TYPE_POINTS`, `BALANCE_TYPE_RES`, `BALANCE_TYPE_DAT`).
 
-| Constant / `type`               | Meaning                   | Response JSON                |
-|---------------------------------|---------------------------|------------------------------|
-| `BALANCE_TYPE_POINTS` (default) | Credits                   | `{"balance": 0}`             |
+| Constant / `type`               | Meaning                   | Response JSON |
+|---------------------------------|---------------------------|---------------|
+| `BALANCE_TYPE_POINTS` (default) | Credits                   | `{"balance": 0, "expires_at_min": null, "expires_at_max": null}` (Unix seconds; `null` if none) |
 | `BALANCE_TYPE_RES`              | Residential proxy traffic | `{"total": 0, "balance": 0}` |
 | `BALANCE_TYPE_DAT`              | Datacenter proxy traffic  | `{"total": 0, "balance": 0}` |
 

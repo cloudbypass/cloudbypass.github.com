@@ -130,7 +130,7 @@ func main() {
 
 ### 查询余额
 
-`GetBalance` 请求控制台 `POST https://console.cloudbypass.com/api/v1/balance`（JSON 体）。第三参数为 `type`：使用 `BalanceTypePoints`（默认，空字符串时）、`BalanceTypeRes`（住宅流量）、`BalanceTypeDat`（机房流量）。返回 `*BalanceResult`；住宅/机房含 `Total` 与 `Balance`（字节），积分仅 `Balance`。
+`GetBalance` 请求控制台 `POST https://console.cloudbypass.com/api/v1/balance`（JSON 体）。第三参数为 `type`：使用 `BalanceTypePoints`（默认，空字符串时）、`BalanceTypeRes`（住宅流量）、`BalanceTypeDat`（机房流量）。返回 `*BalanceResult`；住宅/机房含 `Total` 与 `Balance`（字节），积分含 `Balance`，以及 JSON 字段 `expires_at_min` / `expires_at_max`（Unix 秒，无到期则为空；详见[查询账户余额](/zh-cn/credit_balance)）。
 
 `ConvertBytes` 将字节数格式化为可读字符串，例如搭配 `data.Balance` 使用。
 

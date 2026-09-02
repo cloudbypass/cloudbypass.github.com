@@ -142,7 +142,7 @@ try {
 
 ### Check balance
 
-`getBalance` calls `POST https://console.cloudbypass.com/api/v1/balance` with JSON. Pass `{ type }` as third argument (`BALANCE_TYPE_POINTS`, `BALANCE_TYPE_RES`, `BALANCE_TYPE_DAT`). Traffic types return `{ total, balance }` in bytes; credits return `{ balance }`.
+`getBalance` calls `POST https://console.cloudbypass.com/api/v1/balance` with JSON. Pass `{ type }` as third argument (`BALANCE_TYPE_POINTS`, `BALANCE_TYPE_RES`, `BALANCE_TYPE_DAT`). Traffic types return `{ total, balance }` in bytes; credits return `{ balance, expires_at_min, expires_at_max }` (Unix seconds; `null` if none).
 
 ```js
 import cloudbypass, {

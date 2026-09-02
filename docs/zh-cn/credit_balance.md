@@ -10,9 +10,25 @@
 
 | `type` | 含义 | 响应体 |
 |--------|------|--------|
-| `points` | 账户**积分** | `{"balance": <number>}` |
+| `points` | 账户**积分** | 见下方「积分响应字段」 |
 | `res` | **住宅代理**用户流量 | `{"total": <bytes>, "balance": <bytes>}`，流量字段为**字节** |
 | `dat` | **机房代理**用户流量 | 同上 |
+
+**积分响应字段（`type=points`）：**
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `balance` | number | 当前可用积分余额 |
+| `expires_at_min` | number \| null | 有效积分中**最早**到期时间（Unix 时间戳，秒）；无到期时间时为 `null` |
+| `expires_at_max` | number \| null | 有效积分中**最晚**到期时间（Unix 时间戳，秒）；无到期时间时为 `null` |
+
+```json
+{
+  "balance": 9999816,
+  "expires_at_min": 1725408000,
+  "expires_at_max": 1728000000
+}
+```
 
 ```shell
 # 查询积分

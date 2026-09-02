@@ -122,7 +122,7 @@ func main() {
 
 ### Check balance
 
-`GetBalance` calls `POST https://console.cloudbypass.com/api/v1/balance` with JSON. Third argument is `type`: `BalanceTypePoints` (default when empty), `BalanceTypeRes`, `BalanceTypeDat`. Returns `*BalanceResult`; traffic responses include `Total` and `Balance` in bytes.
+`GetBalance` calls `POST https://console.cloudbypass.com/api/v1/balance` with JSON. Third argument is `type`: `BalanceTypePoints` (default when empty), `BalanceTypeRes`, `BalanceTypeDat`. Returns `*BalanceResult`; traffic responses include `Total` and `Balance` in bytes; credit responses include `Balance` plus JSON fields `expires_at_min` / `expires_at_max` (Unix seconds; empty if none — see [Check account balance](/us-en/credit_balance)).
 
 `ConvertBytes` formats bytes for display, e.g. with `Balance`.
 

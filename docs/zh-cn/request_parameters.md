@@ -29,7 +29,7 @@
 | [x-cb-apikey](/zh-cn/request_parameters?id=APIKEY)                    | `string` | [去控制台获取](https://console.cloudbypass.com/#/api/) | `所有版本` | ![yes.svg](img%2Fyes.svg ":no-zoom") | 访问穿云 API 时使用的密钥。                                               |
 | [x-cb-host](/zh-cn/request_parameters?id=x-cb-host、x-cb-protocol)     | `string` |                                | `所有版本` | ![yes.svg](img%2Fyes.svg ":no-zoom") | 请求的目标域名，例如：`opensea.io`，不要填协议和路径。                   |
 | [x-cb-protocol](/zh-cn/request_parameters?id=x-cb-host、x-cb-protocol) | `string` | "https"                        | `所有版本` |      | 请求协议，例如：`http`、`https`。                                        |
-| [x-cb-fp](/zh-cn/request_parameters?id=X-Cb-Fp)                       | `string` | [版本区分](/zh-cn/request_parameters?id=x-cb-fp) | `v1`     |      | 客户端指纹。                                                           |
+| [x-cb-fp](/zh-cn/request_parameters?id=X-Cb-Fp)                       | `string` | `edge150-win`                  | `所有版本` |      | 客户端指纹。未写版本号的 `chrome`/`edge` 默认使用 `150`。               |
 | [x-cb-proxy](/zh-cn/request_parameters?id=X-Cb-Proxy)                 | `string` |                                | `所有版本` |      | 自定义代理地址，可以是 IP 或域名。支持 `http`、`socks5` 协议。          |
 | x-cb-version                                                          | `string` |                                | `所有版本` |      | 使用穿云 V2 时填 `2`；使用穿云 V2s（与 V2 一致但支持 stream 流式响应）时填 `2s`。 |
 | [x-cb-part](/zh-cn/request_parameters?id=X-Cb-Part)                   | `integer`|                                | `v2`/`v2s` |      | 该请求头仅在穿云 V2/V2s 时有效，用于区分不同的会话，最多可有 1000 个会话分区。|
@@ -49,8 +49,8 @@
 | disable-redirect                                             | `所有版本` | 禁用重定向，遇到 300-399 响应码时会返回完整内容，包括 `Set-Cookie`。（默认自动处理重定向） |
 | ~~long-timeout~~                                              | `v2`     | ~~延长超时。~~ 建议使用请求头 `x-cb-timeout`（优先级更高）。此选项可能后续废弃。     |
 | force                                                        | `v2`     | 强制更换代理，避免在穿云 V2 会话期内无法更换代理时返回 `BYPASS_ERROR` 错误。           |
-| [ignore-lock](/zh-cn/request_parameters?id=关于V2 Part并发问题)  | `v2`     | 忽略挑战锁，多个请求同时使用同一个会话时，直接忽略验证挑战锁，避免错误。                |
-| ~~[wait-lock](/zh-cn/request_parameters?id=关于V2 Part并发问题)~~ | `v2`     | ~~等待挑战锁，多个请求同时使用同一个会话时，防止 `CHALLENGE_LOCK_TIMEOUT` 错误。~~       |
+| [ignore-lock](/zh-cn/request_parameters?id=关于-v2-part-模式并发问题)  | `v2`     | 忽略挑战锁，多个请求同时使用同一个会话时，直接忽略验证挑战锁，避免错误。                |
+| ~~[wait-lock](/zh-cn/request_parameters?id=关于-v2-part-模式并发问题)~~ | `v2`     | ~~等待挑战锁，多个请求同时使用同一个会话时，防止 `CHALLENGE_LOCK_TIMEOUT` 错误。~~       |
 | no-challenge                                                | `v2`     | 遇到验证时拒绝挑战，直接返回错误信息。                                     |
 
 
@@ -279,17 +279,18 @@ X-Cb-Protocol: http
 
 ### X-Cb-Fp
 
-设置请求时使用的浏览器指纹。以下是支持列表
+设置请求时使用的浏览器指纹。未设置时默认 `edge150-win`；`chrome` / `edge` 未写版本号时使用主版本 `150`。
 
-* 穿云V1（默认`chrome`）
-    * `chrome`
-    * `firefox`
-    * `edge`
-* 穿云V2（默认`edge-linux`）
-    * `chrome`、`chrome-linux`、`chrome-mac`、`chrome127`、`chrome127-linux`、`chrome127-mac`
-    * `edge`、`edge-linux`、`edge-mac`、`edge127`、`edge127-linux`、`edge127-mac`
-    * `chrome-android`、`edge-android`、`chrome127-android`、`edge127-android`
-    * 支持 `127~139` 所有版本
+格式：`{browser}{version}-{platform}`，例如 `edge150-win`、`chrome150-mac`；也可省略版本或平台（如 `chrome`、`edge-linux`、`chrome150`）。
+
+* 穿云 V1 / V2s
+    * `chrome`、`edge`、`firefox`、`safari` 等
+    * Chrome / Edge 版本范围 `100~150`；平台：`win`（默认）、`linux`、`mac`
+* 穿云 V2
+    * `chrome`、`chrome-linux`、`chrome-mac`、`chrome150`、`chrome150-linux`、`chrome150-mac`
+    * `edge`、`edge-linux`、`edge-mac`、`edge150`、`edge150-linux`、`edge150-mac`
+    * `chrome-android`、`edge-android`、`chrome150-android`、`edge150-android`
+    * Chrome / Edge 支持 `100~150` 所有版本；另支持 `safari`、`safari-ios`、`safari17`、`safari18` 等
 
 ### X-Cb-Part
 

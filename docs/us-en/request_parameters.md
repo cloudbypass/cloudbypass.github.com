@@ -38,7 +38,7 @@ Here is the complete list of request headers for custom requests:
 | [x-cb-apikey](/us-en/request_parameters?id=apikey)                                  | `string`  |  [Get from Console](https://console.scrapingbypass.com/#/api/)  |   `All Versions`   | ![yes.svg](img%2Fyes.svg ":no-zoom") | The key used when accessing Scrapingbypass API.                                                                                                                                   |
 | [x-cb-host](/us-en/request_parameters?id=x-cb-host-x-cb-protocol)                   | `string`  |                                                                 |   `All Versions`   | ![yes.svg](img%2Fyes.svg ":no-zoom") | The target domain of the request, e.g., `opensea.io`. Do not include the protocol and path.                                                                                       |
 | [x-cb-protocol](/us-en/request_parameters?id=x-cb-host-x-cb-protocol)               | `string`  |                             "https"                             |   `All Versions`   |                                      | The request protocol, e.g., `http`, `https`.                                                                                                                                      |
-| [x-cb-fp](/us-en/request_parameters?id=x-cb-fp)                                     | `string`  | [Version Differentiation](/us-en/request_parameters?id=x-cb-fp) |        `v1`        |                                      | Client fingerprint.                                                                                                                                                               |
+| [x-cb-fp](/us-en/request_parameters?id=x-cb-fp)                                     | `string`  | `edge150-win`                                                   |   `All Versions`   |                                      | Client fingerprint. Unversioned `chrome`/`edge` defaults to major version `150`.                                                                                                  |
 | [x-cb-proxy](/us-en/request_parameters?id=x-cb-proxy)                               | `string`  |                                                                 |   `All Versions`   |                                      | Custom proxy address, can be an IP or domain. Supports `http` and `socks5` protocols.                                                                                             |
 | x-cb-version                                                                        | `string`  |                                                                 |   `All Versions`   |                                      | For Scrapingbypass V2 use `2`; for V2s (same as V2 but with stream response) use `2s`.                                                                                            |
 | [x-cb-part](/us-en/request_parameters?id=x-cb-part)                                 | `integer` |                                                                 |   `v2` / `v2s`     |                                      | This header is valid only in Scrapingbypass V2/V2s, used to differentiate sessions, with a maximum of 1000 session partitions.                                                    |
@@ -288,17 +288,18 @@ Supported formats are as follows:
 
 ### X-Cb-Fp
 
-Set the browser fingerprint used in the request. The following are the supported list:
+Set the browser fingerprint used in the request. Defaults to `edge150-win` when unset; unversioned `chrome` / `edge` use major version `150`.
 
-* Scrapingbypass V1 (default `chrome`）
-    * `chrome`
-    * `firefox`
-    * `edge`
-* Scrapingbypass V2 (default `edge-linux`）
-    * `chrome`、`chrome-linux`、`chrome-mac`、`chrome127`、`chrome127-linux`、`chrome127-mac`
-    * `edge`、`edge-linux`、`edge-mac`、`edge127`、`edge127-linux`、`edge127-mac`
-    * `chrome-android`、`edge-android`、`chrome127-android`、`edge127-android`
-    * Support `127~139` versions
+Format: `{browser}{version}-{platform}`, e.g. `edge150-win`, `chrome150-mac`. Version or platform may be omitted (e.g. `chrome`, `edge-linux`, `chrome150`).
+
+* Scrapingbypass V1 / V2s
+    * `chrome`, `edge`, `firefox`, `safari`, etc.
+    * Chrome / Edge version range `100~150`; platforms: `win` (default), `linux`, `mac`
+* Scrapingbypass V2
+    * `chrome`, `chrome-linux`, `chrome-mac`, `chrome150`, `chrome150-linux`, `chrome150-mac`
+    * `edge`, `edge-linux`, `edge-mac`, `edge150`, `edge150-linux`, `edge150-mac`
+    * `chrome-android`, `edge-android`, `chrome150-android`, `edge150-android`
+    * Chrome / Edge support all versions `100~150`; also `safari`, `safari-ios`, `safari17`, `safari18`, etc.
 
 ### X-Cb-Part
 

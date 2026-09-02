@@ -162,7 +162,7 @@ try {
 
 ### 查询余额
 
-使用 `getBalance` 调用控制台接口 `POST https://console.cloudbypass.com/api/v1/balance`，请求体为 JSON。第三参数为 `{ type }`，可使用导出常量 `BALANCE_TYPE_POINTS`（默认，积分）、`BALANCE_TYPE_RES`（住宅流量）、`BALANCE_TYPE_DAT`（机房流量）；住宅/机房返回 `{ total, balance }`（字节），积分返回 `{ balance }`。
+使用 `getBalance` 调用控制台接口 `POST https://console.cloudbypass.com/api/v1/balance`，请求体为 JSON。第三参数为 `{ type }`，可使用导出常量 `BALANCE_TYPE_POINTS`（默认，积分）、`BALANCE_TYPE_RES`（住宅流量）、`BALANCE_TYPE_DAT`（机房流量）；住宅/机房返回 `{ total, balance }`（字节），积分返回 `{ balance, expires_at_min, expires_at_max }`（时间戳为秒，无到期则为 `null`）。
 
 ```js
 import cloudbypass, {
