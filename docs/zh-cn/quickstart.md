@@ -1,7 +1,7 @@
 # 快速开始
 
 >
-使用穿云可以帮助您轻松绕过Cloudflare的验证，目前支持绕过JS质询、Turnstile等产品验证。本文档提供了穿云[HTTP API](/zh-cn/request_parameters)、[本地代理工具](/zh-cn/proxy_tools)
+使用穿云可以帮助您轻松绕过 Cloudflare、DataDome 等验证，目前支持绕过 JS质询、Turnstile、DataDome 等产品验证。本文档提供了穿云[HTTP API](/zh-cn/request_parameters)、[本地代理工具](/zh-cn/proxy_tools)
 以及[SDK](/zh-cn/quickstart?id=代码示例)的详细使用方法。
 
 # 工作流程
@@ -60,7 +60,7 @@ https://docs.cloudbypass.com/api-quick-reference.md
 
 ## 穿云V2
 
-> 当遇到以下`JS质询`或者`Turnstile`部件时使用
+> 当遇到以下 `JS质询`、`Turnstile` 部件或 `DataDome` 挑战时使用
 
 ![turnstile.png](img%2Fturnstile.gif ":no-zoom :size=350")
 
@@ -70,9 +70,9 @@ https://docs.cloudbypass.com/api-quick-reference.md
 
 穿云 V2s 与 V2 一致，但支持 **stream 流式响应**，适合大文件下载或需要边下边处理的场景。使用方式：请求头 `x-cb-version: 2s`，其余参数同 V2（如 `x-cb-proxy`、`x-cb-part` 等）。
 
-### 如何区分两种验证？
+### 如何区分常见验证？
 
-在穿云V2中，可以通过以下规则判断目标网站使用的是 `JS质询` 还是 `Turnstile` 验证机制：
+在穿云V2中，可以通过以下规则判断目标网站使用的验证机制：
 
 1. **JS质询**
     - 当访问者**第一次加载网站页面**时，返回 HTTP 状态码 `403`。
@@ -81,6 +81,10 @@ https://docs.cloudbypass.com/api-quick-reference.md
 2. **Turnstile**
     - 当**提交表单时**触发验证小部件。
     - 不符合以上 `JS质询` 的特征，即响应中不包含 `cf-mitigated: challenge` 字段。
+
+3. **DataDome**
+    - 返回 HTTP 状态码 `403`。
+    - 响应头同时包含 `x-datadome-cid` 与 `x-dd-b` 字段（常见还有 `x-datadome: protected`）。
 
 ### 突破 `JS质询`，穿云V2自动挑战
 
@@ -152,6 +156,26 @@ https://docs.cloudbypass.com/api-quick-reference.md
 3. **示例 3**  
    将 Token 放入请求体的 `accessToken` 字段：  
    [查看代码示例](https://github.com/cloudbypass/example/blob/main/code/com/cityline/api_otp.py#L22)
+
+---
+
+### 突破 `DataDome` 挑战
+
+穿云V2支持自动识别并处理 DataDome 挑战，无需额外请求头。
+
+**识别特征**
+
+- 目标站返回 `403`
+- 响应头同时存在 `x-datadome-cid`、`x-dd-b`
+
+**使用说明**
+
+- 与其它 V2 挑战相同，必须提供**粘性 / 固定时效代理**（`x-cb-proxy`）。
+- 使用方式与 [JS质询](/zh-cn/quickstart?id=突破-js质询穿云v2自动挑战) 一致：`Cookie` 模式或 `Part` 模式均可。
+- Cookie 模式下，挑战成功后返回的加密 Cookie 中会包含 `datadome`；Part 模式下由服务端会话托管。
+- 若站点同时存在 Cloudflare 与 DataDome，穿云会按流水线依次处理；每次挑战成功按阶段扣费，详见 [积分消耗](/zh-cn/credit_consume)。
+
+?> DataDome 挑战耗时可能较长，建议合理设置 `x-cb-timeout`（V2 最长 360 秒）。
 
 ### 获取帮助
 

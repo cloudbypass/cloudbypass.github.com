@@ -7,7 +7,7 @@
 ## 何时用
 
 - 程序请求 403、浏览器能打开 → 先用 **V1**；若 V1 失败或返回需挑战（如五秒盾）则改用 **V2**。
-- 已知为 JS 质询 / Turnstile 验证 → 直接用 **V2**（须提供 `x-cb-proxy`）。
+- 已知为 JS 质询 / Turnstile / DataDome 验证 → 直接用 **V2**（须提供 `x-cb-proxy`；DataDome 特征为 `403` + `x-datadome-cid` + `x-dd-b`）。
 - 需要 **stream 流式响应**（如大文件下载）→ 使用 **V2s**（`x-cb-version: 2s`，与 V2 一致）。
 - 用户明确要求用 V1、V2 或 V2s 时，按用户要求。
 

@@ -303,9 +303,9 @@ Format: `{browser}{version}-{platform}`, e.g. `edge150-win`, `chrome150-mac`. Ve
 
 ### X-Cb-Part
 
-Scrapingbypass V2 uses session-based management, where all Cloudflare response cookies are stored on the Scrapingbypass
+Scrapingbypass V2 uses session-based management, where challenge-related cookies (Cloudflare / DataDome, etc.) are stored on the Scrapingbypass
 servers. Users can switch sessions by setting the `X-Cb-Part` request header.
-After the validation succeeds, the `cloudflare cookie` will remain valid for 10 minutes. If another request is made
+After the validation succeeds, the related cookies remain valid for 10 minutes. If another request is made
 within 10 minutes, the session will be extended.
 
 ?> During the session, the proxy cannot be changed. If needed, you can configure `x-cb-options: force` to force a proxy
@@ -313,7 +313,7 @@ change. (Generally not recommended.)
 
 ## Using Scrapingbypass V2 for Requests
 
-Scrapingbypass V2 is suitable for websites that require `JS Challenges` or `Turnstile` widgets.
+Scrapingbypass V2 is suitable for websites that require `JS Challenges`, `Turnstile` widgets, or `DataDome` challenges. DataDome is detected automatically (`403` with response headers `x-datadome-cid` and `x-dd-b`); no extra parameters are needed. Usage is the same as JS Challenge—see [Bypass DataDome](/us-en/quickstart?id=bypass-datadome-challenge).
 
 ### `Part` Mode Request Example
 

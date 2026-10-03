@@ -8,6 +8,7 @@
 
 * `Cloudflare JS质询`
 * `Cloudflare Turnstile`
+* `DataDome`
 * `Incapsula`
 
 验证挑战成功会立即扣除`2积分`，如果响应时出现错误积分不会返还，但请求积分不会被扣取。

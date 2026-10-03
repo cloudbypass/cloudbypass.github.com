@@ -4,10 +4,11 @@
 <br/>
 > When using Cloud Piercing v2, an additional `2 credits` will be consumed if a verification challenge is successful
 
-This includes the following validations::
+This includes the following validations:
 
 * `Cloudflare JS challenge`
 * `Cloudflare Turnstile`
+* `DataDome`
 * `Incapsula`
 
 If the verification challenge is successful, `2 credits` will be deducted immediately. If an error occurs during the response, the points will not be returned, but the request points will not be deducted.

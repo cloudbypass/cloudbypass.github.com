@@ -1,6 +1,6 @@
 # Quick Start
 
-> Using Scrapingbypass can help you easily bypass Cloudflare's verifications, including JS Challenges, Turnstile, and other product verifications. This document provides detailed usage instructions for Scrapingbypass's [HTTP API](/us-en/request_parameters), [Local Proxy Tools](/us-en/proxy_tools), and [SDK](/us-en/quickstart?id=code-example).
+> Using Scrapingbypass can help you easily bypass Cloudflare, DataDome, and other verifications, including JS Challenges, Turnstile, DataDome, and more. This document provides detailed usage instructions for Scrapingbypass's [HTTP API](/us-en/request_parameters), [Local Proxy Tools](/us-en/proxy_tools), and [SDK](/us-en/quickstart?id=code-example).
 
 # Workflow
 
@@ -56,7 +56,7 @@ Scrapingbypass V1 comes with a built-in dynamic proxy. You can also set up your 
 
 ## Scrapingbypass V2
 
-> Use when encountering `JS Challenge` or `Turnstile` components.
+> Use when encountering `JS Challenge`, `Turnstile` components, or `DataDome` challenges.
 
 ![turnstile.png](img%2Fturnstile.gif ":no-zoom :size=350")
 
@@ -66,9 +66,9 @@ Scrapingbypass V1 comes with a built-in dynamic proxy. You can also set up your 
 
 Scrapingbypass V2s is the same as V2 but supports **stream response**, suitable for large file downloads or when you need to process data as it streams. Usage: set request header `x-cb-version: 2s`; all other parameters are the same as V2 (e.g. `x-cb-proxy`, `x-cb-part`).
 
-### How to Distinguish Between Two Verifications?
+### How to Distinguish Common Verifications?
 
-In Scrapingbypass V2, you can distinguish between `JS Challenge` and `Turnstile` verification mechanisms using the following rules:
+In Scrapingbypass V2, you can identify the verification mechanism using the following rules:
 
 1. **JS Challenge**
     - When the visitor **first loads the website page**, the server returns HTTP status code `403`.
@@ -77,6 +77,10 @@ In Scrapingbypass V2, you can distinguish between `JS Challenge` and `Turnstile`
 2. **Turnstile**
     - Triggered **when submitting a form** that involves a verification widget.
     - Does not meet the characteristics of `JS Challenge`, i.e., the response does not contain the `cf-mitigated: challenge` field.
+
+3. **DataDome**
+    - Returns HTTP status code `403`.
+    - Response headers include both `x-datadome-cid` and `x-dd-b` (often also `x-datadome: protected`).
 
 ### Bypass `JS Challenge`, Scrapingbypass V2 Auto Challenge
 
@@ -146,6 +150,26 @@ Here are code examples for different scenarios of using the Token:
 3. **Example 3**  
    Place the Token in the `accessToken` field in the request body:  
    [View Code Example](https://github.com/cloudbypass/example/blob/main/code/com/cityline/api_otp.py#L22)
+
+---
+
+### Bypass `DataDome` Challenge
+
+Scrapingbypass V2 automatically detects and solves DataDome challenges. No extra request headers are required.
+
+**Detection**
+
+- Target returns `403`
+- Response headers include both `x-datadome-cid` and `x-dd-b`
+
+**Usage**
+
+- Same as other V2 challenges: a **sticky / duration proxy** (`x-cb-proxy`) is required.
+- Works with both [Cookie mode and Part mode](/us-en/quickstart?id=bypass-js-challenge-scrapingbypass-v2-auto-challenge).
+- In Cookie mode, a successful challenge returns an encrypted Cookie that includes `datadome`; in Part mode the session is hosted on the server.
+- If a site uses both Cloudflare and DataDome, Scrapingbypass handles them in sequence. Each successful challenge stage consumes credits—see [Credit consumption](/us-en/credit_consume).
+
+?> DataDome challenges may take longer. Set `x-cb-timeout` appropriately (V2 max 360 seconds).
 
 ### Get Help
 

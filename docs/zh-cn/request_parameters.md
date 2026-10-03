@@ -294,14 +294,14 @@ X-Cb-Protocol: http
 
 ### X-Cb-Part
 
-穿云V2采用会话托管模式，所有cloudflare响应的cookie都将被存储到穿云服务器，用户可以通过设置`X-Cb-Part`请求头切换会话。
-当验证通过后`cloudflare cookie`将保留10分钟，10分钟内再次请求成功则续期。
+穿云V2采用会话托管模式，Cloudflare / DataDome 等挑战相关的 cookie 都将被存储到穿云服务器，用户可以通过设置`X-Cb-Part`请求头切换会话。
+当验证通过后相关 cookie 将保留10分钟，10分钟内再次请求成功则续期。
 
 ?> 在会话期内无法更换代理，如有业务需求可配置`x-cb-options: force`强制更换。(一般不推荐)
 
 ## 使用穿云V2进行请求
 
-穿云V2适用于需要通过`JS质询`或者`Turnstile`部件的网站。
+穿云V2适用于需要通过 `JS质询`、`Turnstile` 部件或 `DataDome` 挑战的网站。DataDome 由服务端自动识别（`403` 且响应头含 `x-datadome-cid`、`x-dd-b`），无需额外参数，用法与 JS质询相同，详见 [突破 DataDome](/zh-cn/quickstart?id=突破-datadome-挑战)。
 
 ### `Part`模式请求示例
 
