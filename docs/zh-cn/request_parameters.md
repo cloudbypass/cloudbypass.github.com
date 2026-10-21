@@ -29,7 +29,8 @@
 | [x-cb-apikey](/zh-cn/request_parameters?id=APIKEY)                    | `string` | [去控制台获取](https://console.cloudbypass.com/#/api/) | `所有版本` | ![yes.svg](img%2Fyes.svg ":no-zoom") | 访问穿云 API 时使用的密钥。                                               |
 | [x-cb-host](/zh-cn/request_parameters?id=x-cb-host、x-cb-protocol)     | `string` |                                | `所有版本` | ![yes.svg](img%2Fyes.svg ":no-zoom") | 请求的目标域名，例如：`opensea.io`，不要填协议和路径。                   |
 | [x-cb-protocol](/zh-cn/request_parameters?id=x-cb-host、x-cb-protocol) | `string` | "https"                        | `所有版本` |      | 请求协议，例如：`http`、`https`。                                        |
-| [x-cb-fp](/zh-cn/request_parameters?id=X-Cb-Fp)                       | `string` | `edge150-win`                  | `所有版本` |      | 客户端指纹。未写版本号的 `chrome`/`edge` 默认使用 `150`。               |
+| [x-cb-fp](/zh-cn/request_parameters?id=X-Cb-Fp)                       | `string` | `edge152-win`                  | `所有版本` |      | 客户端指纹。未写版本号的 `chrome`/`edge` 默认使用主版本 `152`。         |
+| [x-cb-ua](/zh-cn/request_parameters?id=X-Cb-Ua)                       | `string` |                                | `v1`/`v2`/`v2s` |      | 自定义 User-Agent。有值时优先于 `x-cb-fp`。Go V1/V2/V2s 生效；当前 Python V2 忽略。 |
 | [x-cb-proxy](/zh-cn/request_parameters?id=X-Cb-Proxy)                 | `string` |                                | `所有版本` |      | 自定义代理地址，可以是 IP 或域名。支持 `http`、`socks5` 协议。          |
 | x-cb-version                                                          | `string` |                                | `所有版本` |      | 使用穿云 V2 时填 `2`；使用穿云 V2s（与 V2 一致但支持 stream 流式响应）时填 `2s`。 |
 | [x-cb-part](/zh-cn/request_parameters?id=X-Cb-Part)                   | `integer`|                                | `v2`/`v2s` |      | 该请求头仅在穿云 V2/V2s 时有效，用于区分不同的会话，最多可有 1000 个会话分区。|
@@ -279,18 +280,53 @@ X-Cb-Protocol: http
 
 ### X-Cb-Fp
 
-设置请求时使用的浏览器指纹。未设置时默认 `edge150-win`；`chrome` / `edge` 未写版本号时使用主版本 `150`。
+设置请求时使用的浏览器指纹。未设置时默认 **`edge152-win`**；`chrome` / `edge` 未写版本号时使用主版本 **`152`**。
 
-格式：`{browser}{version}-{platform}`，例如 `edge150-win`、`chrome150-mac`；也可省略版本或平台（如 `chrome`、`edge-linux`、`chrome150`）。
+格式：`{browser}{version}-{platform}`，例如 `edge152-win`、`chrome152-mac`；也可省略版本或平台（如 `chrome`、`edge-linux`、`chrome152`）。
 
-* 穿云 V1 / V2s
-    * `chrome`、`edge`、`firefox`、`safari` 等
-    * Chrome / Edge 版本范围 `100~150`；平台：`win`（默认）、`linux`、`mac`
-* 穿云 V2
-    * `chrome`、`chrome-linux`、`chrome-mac`、`chrome150`、`chrome150-linux`、`chrome150-mac`
-    * `edge`、`edge-linux`、`edge-mac`、`edge150`、`edge150-linux`、`edge150-mac`
-    * `chrome-android`、`edge-android`、`chrome150-android`、`edge150-android`
-    * Chrome / Edge 支持 `100~150` 所有版本；另支持 `safari`、`safari-ios`、`safari17`、`safari18` 等
+* Chrome / Edge
+    * 主版本范围 **`100~160`**
+    * 平台：`win`（默认）、`linux`、`mac`；Python V2 另支持 `android`（如 `chrome-android`、`edge152-android`）
+    * 示例：`chrome`、`edge`、`chrome152`、`edge152-win`、`chrome130-mac`
+* 其它
+    * `firefox`（默认主版本 `152`）、`firefox144`、`firefox147`、`firefox151`
+    * `safari`、`safari-ios`、`safari17`、`safari18`、`safari17-ios`、`safari18-ios`
+    * `opera`
+
+未填写 [`x-cb-ua`](/zh-cn/request_parameters?id=X-Cb-Ua) 时，默认 UA 由本指纹生成。默认 `edge152-win` 对应：
+
+```
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0
+```
+
+### X-Cb-Ua
+
+自定义请求使用的 User-Agent。
+
+**优先级：** `x-cb-ua` **高于** `x-cb-fp`。
+
+| 填写情况 | 行为 |
+|---------|------|
+| 同时传 `x-cb-ua` 与 `x-cb-fp` | 使用 `x-cb-ua` 作为 UA，并按该 UA 匹配 TLS / 客户端提示 |
+| 只传 `x-cb-fp` | 按指纹生成默认 UA |
+| 两者都不传 | 指纹回落为 `edge152-win`，再生成上面的默认 Edge 152 UA |
+
+**支持情况：**
+
+* **Go V1 / Go V2 / V2s**：读取 `x-cb-ua`。Chrome / Chromium / Edge 主版本需在 **`100~160`**，否则返回 `USER_AGENT_INVALID`。
+* **当前仍部署的 Python V2**：不读取 `x-cb-ua`，UA 只由 `x-cb-fp` 生成。需要自定义 UA 时请改用 Go V2 / V2s，或只设 `x-cb-fp`。
+
+请求头里的 `User-Agent` 会被过滤，不会转发到目标站；请用 `x-cb-ua` 指定。
+
+```shell
+curl --request GET \
+  --url "https://api.cloudbypass.com/" \
+  --header "x-cb-apikey: <APIKEY>" \
+  --header "x-cb-host: example.com" \
+  --header "x-cb-version: 2" \
+  --header "x-cb-proxy: <PROXY>" \
+  --header "x-cb-ua: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0"
+```
 
 ### X-Cb-Part
 

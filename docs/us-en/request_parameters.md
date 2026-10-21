@@ -38,7 +38,8 @@ Here is the complete list of request headers for custom requests:
 | [x-cb-apikey](/us-en/request_parameters?id=apikey)                                  | `string`  |  [Get from Console](https://console.scrapingbypass.com/#/api/)  |   `All Versions`   | ![yes.svg](img%2Fyes.svg ":no-zoom") | The key used when accessing Scrapingbypass API.                                                                                                                                   |
 | [x-cb-host](/us-en/request_parameters?id=x-cb-host-x-cb-protocol)                   | `string`  |                                                                 |   `All Versions`   | ![yes.svg](img%2Fyes.svg ":no-zoom") | The target domain of the request, e.g., `opensea.io`. Do not include the protocol and path.                                                                                       |
 | [x-cb-protocol](/us-en/request_parameters?id=x-cb-host-x-cb-protocol)               | `string`  |                             "https"                             |   `All Versions`   |                                      | The request protocol, e.g., `http`, `https`.                                                                                                                                      |
-| [x-cb-fp](/us-en/request_parameters?id=x-cb-fp)                                     | `string`  | `edge150-win`                                                   |   `All Versions`   |                                      | Client fingerprint. Unversioned `chrome`/`edge` defaults to major version `150`.                                                                                                  |
+| [x-cb-fp](/us-en/request_parameters?id=x-cb-fp)                                     | `string`  | `edge152-win`                                                   |   `All Versions`   |                                      | Client fingerprint. Unversioned `chrome`/`edge` defaults to major version `152`.                                                                                                  |
+| [x-cb-ua](/us-en/request_parameters?id=x-cb-ua)                                     | `string`  |                                                                 | `v1` / `v2` / `v2s` |                                      | Custom User-Agent. Overrides `x-cb-fp` when set. Honored on Go V1/V2/V2s; currently ignored by Python V2.                                                                         |
 | [x-cb-proxy](/us-en/request_parameters?id=x-cb-proxy)                               | `string`  |                                                                 |   `All Versions`   |                                      | Custom proxy address, can be an IP or domain. Supports `http` and `socks5` protocols.                                                                                             |
 | x-cb-version                                                                        | `string`  |                                                                 |   `All Versions`   |                                      | For Scrapingbypass V2 use `2`; for V2s (same as V2 but with stream response) use `2s`.                                                                                            |
 | [x-cb-part](/us-en/request_parameters?id=x-cb-part)                                 | `integer` |                                                                 |   `v2` / `v2s`     |                                      | This header is valid only in Scrapingbypass V2/V2s, used to differentiate sessions, with a maximum of 1000 session partitions.                                                    |
@@ -288,18 +289,53 @@ Supported formats are as follows:
 
 ### X-Cb-Fp
 
-Set the browser fingerprint used in the request. Defaults to `edge150-win` when unset; unversioned `chrome` / `edge` use major version `150`.
+Set the browser fingerprint used in the request. Defaults to **`edge152-win`** when unset; unversioned `chrome` / `edge` use major version **`152`**.
 
-Format: `{browser}{version}-{platform}`, e.g. `edge150-win`, `chrome150-mac`. Version or platform may be omitted (e.g. `chrome`, `edge-linux`, `chrome150`).
+Format: `{browser}{version}-{platform}`, e.g. `edge152-win`, `chrome152-mac`. Version or platform may be omitted (e.g. `chrome`, `edge-linux`, `chrome152`).
 
-* Scrapingbypass V1 / V2s
-    * `chrome`, `edge`, `firefox`, `safari`, etc.
-    * Chrome / Edge version range `100~150`; platforms: `win` (default), `linux`, `mac`
-* Scrapingbypass V2
-    * `chrome`, `chrome-linux`, `chrome-mac`, `chrome150`, `chrome150-linux`, `chrome150-mac`
-    * `edge`, `edge-linux`, `edge-mac`, `edge150`, `edge150-linux`, `edge150-mac`
-    * `chrome-android`, `edge-android`, `chrome150-android`, `edge150-android`
-    * Chrome / Edge support all versions `100~150`; also `safari`, `safari-ios`, `safari17`, `safari18`, etc.
+* Chrome / Edge
+    * Major version range **`100~160`**
+    * Platforms: `win` (default), `linux`, `mac`; Python V2 also supports `android` (e.g. `chrome-android`, `edge152-android`)
+    * Examples: `chrome`, `edge`, `chrome152`, `edge152-win`, `chrome130-mac`
+* Others
+    * `firefox` (default major `152`), `firefox144`, `firefox147`, `firefox151`
+    * `safari`, `safari-ios`, `safari17`, `safari18`, `safari17-ios`, `safari18-ios`
+    * `opera`
+
+When [`x-cb-ua`](/us-en/request_parameters?id=x-cb-ua) is not set, the default UA is generated from this fingerprint. Default `edge152-win` maps to:
+
+```
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0
+```
+
+### X-Cb-Ua
+
+Custom User-Agent for the outbound request.
+
+**Priority:** `x-cb-ua` **overrides** `x-cb-fp`.
+
+| Headers | Behavior |
+|---------|----------|
+| Both `x-cb-ua` and `x-cb-fp` | Use `x-cb-ua` as UA, and match TLS / client hints from that UA |
+| Only `x-cb-fp` | Generate default UA from the fingerprint |
+| Neither | Fingerprint falls back to `edge152-win`, then the Edge 152 UA above |
+
+**Support:**
+
+* **Go V1 / Go V2 / V2s**: reads `x-cb-ua`. Chrome / Chromium / Edge major version must be **`100~160`**, otherwise `USER_AGENT_INVALID`.
+* **Currently deployed Python V2**: does **not** read `x-cb-ua`; UA comes only from `x-cb-fp`. To customize UA, use Go V2 / V2s, or set `x-cb-fp` only.
+
+The request `User-Agent` header is stripped and not forwarded. Use `x-cb-ua` instead.
+
+```shell
+curl --request GET \
+  --url "https://api.cloudbypass.com/" \
+  --header "x-cb-apikey: <APIKEY>" \
+  --header "x-cb-host: example.com" \
+  --header "x-cb-version: 2" \
+  --header "x-cb-proxy: <PROXY>" \
+  --header "x-cb-ua: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0"
+```
 
 ### X-Cb-Part
 

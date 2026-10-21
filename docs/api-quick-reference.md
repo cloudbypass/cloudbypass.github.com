@@ -20,7 +20,7 @@
 
 **必填头**：`x-cb-apikey`（密钥，控制台 https://console.cloudbypass.com/#/ 获取）、`x-cb-host`（目标主机，如 `example.com`，不含协议与路径）。
 
-**可选头**：`x-cb-protocol` 默认 https，http 目标填 `http`；V2 时 `x-cb-version: 2`、`x-cb-proxy`（必填）、`x-cb-part`（会话分区）、`x-cb-sitekey`（Turnstile 用）；**穿云 V2s** 使用 `x-cb-version: 2s`，与 V2 一致但支持 **stream 流式响应**（适合大文件/下载）；`x-cb-timeout` 为请求超时秒数（整数，v1/v2s 范围 5–3600、默认 30，v2 范围 5–360、默认 15），优先级高于 `x-cb-options` 中的 ~~`long-timeout`~~（可能后续废弃）；`x-cb-options` 可填 ~~`long-timeout`~~、`force`、`ignore-lock` 等逗号分隔。所有 `x-cb-*` 头不会转发到目标站。
+**可选头**：`x-cb-protocol` 默认 https，http 目标填 `http`；V2 时 `x-cb-version: 2`、`x-cb-proxy`（必填）、`x-cb-part`（会话分区）、`x-cb-sitekey`（Turnstile 用）；**穿云 V2s** 使用 `x-cb-version: 2s`，与 V2 一致但支持 **stream 流式响应**（适合大文件/下载）；`x-cb-fp` 客户端指纹，默认 `edge152-win`（未写版本号的 `chrome`/`edge` 用主版本 `152`）；`x-cb-ua` 自定义 User-Agent（**优先于** `x-cb-fp`；Go V1 / Go V2 / V2s 生效，当前 Python V2 不读取）；`x-cb-timeout` 为请求超时秒数（整数，v1/v2s 范围 5–3600、默认 30，v2 范围 5–360、默认 15），优先级高于 `x-cb-options` 中的 ~~`long-timeout`~~（可能后续废弃）；`x-cb-options` 可填 ~~`long-timeout`~~、`force`、`ignore-lock` 等逗号分隔。所有 `x-cb-*` 头不会转发到目标站。请求头 `User-Agent` 会被过滤，请用 `x-cb-ua` 指定。
 
 **方法 / Body / 其它头**：与原请求一致。
 
@@ -29,7 +29,7 @@
 ## 成功与失败
 
 - **成功**：响应头 `x-cb-status` 为 `ok`，响应体即目标站内容。
-- **失败**：`x-cb-status` 非 `ok` 时，响应体为 JSON：`{"id","code","message"}`。常见 code：`PARAM_ERROR`、`APIKEY_INVALID`、`INSUFFICIENT_BALANCE`、`PROXY_ERROR`、`CLOUDFLARE_CHALLENGE_TIMEOUT`、`CHALLENGE_LOCK_OCCUPIED`、`BYPASS_ERROR`、`FORBIDDEN`、`TOO_MANY_REQUESTS`。
+- **失败**：`x-cb-status` 非 `ok` 时，响应体为 JSON：`{"id","code","message"}`。常见 code：`PARAM_ERROR`、`USER_AGENT_INVALID`、`APIKEY_INVALID`、`INSUFFICIENT_BALANCE`、`PROXY_ERROR`、`CLOUDFLARE_CHALLENGE_TIMEOUT`、`CHALLENGE_LOCK_OCCUPIED`、`BYPASS_ERROR`、`FORBIDDEN`、`TOO_MANY_REQUESTS`。
 
 ---
 
