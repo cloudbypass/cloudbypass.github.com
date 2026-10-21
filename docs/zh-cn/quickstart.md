@@ -34,6 +34,8 @@ API请求。
 
 ## 在OpenClaw中使用
 
+使用 AI 编程助手、HTTP MCP 或需要生成代码与排查请求失败时，请阅读 [Vibe Coding 工具接入指南](/zh-cn/vibe_coding)。
+
 ```
 使用穿云 API：
 https://docs.cloudbypass.com/api-quick-reference.md

@@ -1,5 +1,7 @@
 # API Quick Reference
 
+AI 编程助手的 MCP 调用、代码编写、爬虫架构与故障诊断流程，见 [Vibe Coding 工具接入指南](/zh-cn/vibe_coding.md)。穿云目前仅提供公共 HTTP API，没有专用 MCP 服务。
+
 访问受 Cloudflare 保护站点时，通过穿云 API 转发请求，无需插件。文档：https://github.com/cloudbypass/cloudbypass.github.com
 
 ---
@@ -29,7 +31,7 @@
 ## 参数边界与默认值
 
 - 默认指纹为 `edge155-win`；省略版本号的 `chrome` / `edge` 仍使用 `152`。服务端可分别通过 `ELECTRON_API_FP`、`ELECTRON_API_FP_CHROMIUM_VERSION` 覆盖，部署值可能不同。
-- V2 / V2s 的 `x-cb-part` 默认接受 `0–998`（999 个分区），实际要求 `0 ≤ part < V2_PART_MAX`，以服务端配置为准。
+- V2 / V2s 的 `x-cb-part` 默认接受 `0–998` 的整数（共 999 个分区），实际可用范围以服务提供的限制为准。
 - Turnstile 须同时设置 `x-cb-sitekey`，并在 URL、请求头或请求体中包含 `[cf_token]` 或 `%5Bcf_token%5D`；仅填写 sitekey 不会触发 Token 求解。可选 `x-cb-action`、`x-cb-cdata` 分别传递 action、cData。
 - Go V1 / V2s 忽略非整数或超出 5–3600 的 `x-cb-timeout`；Python V2 对非整数或超出 5–360 的值返回 HTTP 400 / `PARAMS_ERROR`。`long-timeout` 在 Go V1 / V2s 和 Python V2 均将超时设为 60 秒，有效的 `x-cb-timeout` 优先。
 - `x-cb-cookie` 与原 Cookie 合并，同名项以 `x-cb-cookie` 为准，其余保留。

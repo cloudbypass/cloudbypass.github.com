@@ -33,7 +33,7 @@
 | [x-cb-ua](/zh-cn/request_parameters?id=X-Cb-Ua)                       | `string` |                                | `v1`/`v2`/`v2s` |      | 自定义 User-Agent。有值时优先于 `x-cb-fp`。Go V1/V2/V2s 生效；当前 Python V2 忽略。 |
 | [x-cb-proxy](/zh-cn/request_parameters?id=X-Cb-Proxy)                 | `string` |                                | `所有版本` |      | 自定义代理地址，可以是 IP 或域名。支持 `http`、`socks5` 协议。          |
 | x-cb-version                                                          | `string` |                                | `所有版本` |      | 使用穿云 V2 时填 `2`；使用穿云 V2s（与 V2 一致但支持 stream 流式响应）时填 `2s`。 |
-| [x-cb-part](/zh-cn/request_parameters?id=X-Cb-Part)                   | `integer`|                                | `v2`/`v2s` |      | 该请求头仅在穿云 V2/V2s 时有效，用于区分不同的会话，默认允许 0–998，共 999 个分区；实际范围为 `0 ≤ part < V2_PART_MAX`，由服务端配置决定。|
+| [x-cb-part](/zh-cn/request_parameters?id=X-Cb-Part)                   | `integer`|                                | `v2`/`v2s` |      | 该请求头仅在穿云 V2/V2s 时有效，用于区分不同的会话，默认允许 `0–998` 的整数，共 999 个分区；实际可用范围以服务提供的限制为准。|
 | [x-cb-origin](/zh-cn/request_parameters?id=关于浏览器跨域的问题)        | `string` |                                | `所有版本` |      | 替换请求头中的 `origin` 字段，常用于跨域请求绕过 CORS 限制。           |
 | [x-cb-referer](/zh-cn/request_parameters?id=关于浏览器跨域的问题)       | `string` |                                | `所有版本` |      | 替换请求头中的 `referer` 字段，常用于跨域请求绕过 CORS 限制。          |
 | x-cb-cookie                                                           | `string` |                                | `所有版本` |      | 与原请求头中的 `cookie` 合并；同名 Cookie 以 `x-cb-cookie` 为准，其余保留。           |
