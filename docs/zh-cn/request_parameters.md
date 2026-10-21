@@ -29,17 +29,21 @@
 | [x-cb-apikey](/zh-cn/request_parameters?id=APIKEY)                    | `string` | [去控制台获取](https://console.cloudbypass.com/#/api/) | `所有版本` | ![yes.svg](img%2Fyes.svg ":no-zoom") | 访问穿云 API 时使用的密钥。                                               |
 | [x-cb-host](/zh-cn/request_parameters?id=x-cb-host、x-cb-protocol)     | `string` |                                | `所有版本` | ![yes.svg](img%2Fyes.svg ":no-zoom") | 请求的目标域名，例如：`opensea.io`，不要填协议和路径。                   |
 | [x-cb-protocol](/zh-cn/request_parameters?id=x-cb-host、x-cb-protocol) | `string` | "https"                        | `所有版本` |      | 请求协议，例如：`http`、`https`。                                        |
-| [x-cb-fp](/zh-cn/request_parameters?id=X-Cb-Fp)                       | `string` | `edge152-win`                  | `所有版本` |      | 客户端指纹。未写版本号的 `chrome`/`edge` 默认使用主版本 `152`。         |
+| [x-cb-fp](/zh-cn/request_parameters?id=X-Cb-Fp)                       | `string` | `edge155-win`                  | `所有版本` |      | 客户端指纹。未写版本号的 `chrome`/`edge` 默认使用主版本 `152`。         |
 | [x-cb-ua](/zh-cn/request_parameters?id=X-Cb-Ua)                       | `string` |                                | `v1`/`v2`/`v2s` |      | 自定义 User-Agent。有值时优先于 `x-cb-fp`。Go V1/V2/V2s 生效；当前 Python V2 忽略。 |
 | [x-cb-proxy](/zh-cn/request_parameters?id=X-Cb-Proxy)                 | `string` |                                | `所有版本` |      | 自定义代理地址，可以是 IP 或域名。支持 `http`、`socks5` 协议。          |
 | x-cb-version                                                          | `string` |                                | `所有版本` |      | 使用穿云 V2 时填 `2`；使用穿云 V2s（与 V2 一致但支持 stream 流式响应）时填 `2s`。 |
-| [x-cb-part](/zh-cn/request_parameters?id=X-Cb-Part)                   | `integer`|                                | `v2`/`v2s` |      | 该请求头仅在穿云 V2/V2s 时有效，用于区分不同的会话，最多可有 1000 个会话分区。|
+| [x-cb-part](/zh-cn/request_parameters?id=X-Cb-Part)                   | `integer`|                                | `v2`/`v2s` |      | 该请求头仅在穿云 V2/V2s 时有效，用于区分不同的会话，默认允许 0–998，共 999 个分区；实际范围为 `0 ≤ part < V2_PART_MAX`，由服务端配置决定。|
 | [x-cb-origin](/zh-cn/request_parameters?id=关于浏览器跨域的问题)        | `string` |                                | `所有版本` |      | 替换请求头中的 `origin` 字段，常用于跨域请求绕过 CORS 限制。           |
 | [x-cb-referer](/zh-cn/request_parameters?id=关于浏览器跨域的问题)       | `string` |                                | `所有版本` |      | 替换请求头中的 `referer` 字段，常用于跨域请求绕过 CORS 限制。          |
-| x-cb-cookie                                                           | `string` |                                | `所有版本` |      | 替换请求头中的 `cookie` 字段，常用于跨域请求绕过 CORS 限制。           |
-| [x-cb-sitekey](/zh-cn/request_parameters?id=如何获取sitekey)            | `string` |                                | `v2`/`v2s` |      | 填写后触发 `Turnstile` 小部件验证，验证结果将自动填充后续请求。          |
+| x-cb-cookie                                                           | `string` |                                | `所有版本` |      | 与原请求头中的 `cookie` 合并；同名 Cookie 以 `x-cb-cookie` 为准，其余保留。           |
+| [x-cb-sitekey](/zh-cn/request_parameters?id=如何获取sitekey)            | `string` |                                | `v2`/`v2s` |      | 须同时在 URL、请求头或请求体中包含 `[cf_token]` 或 `%5Bcf_token%5D` 才会触发 Turnstile Token 求解并替换占位符。          |
+| x-cb-action | `string` | | `v2`/`v2s` | | 可选，传递 Turnstile 的 action 参数。 |
+| x-cb-cdata | `string` | | `v2`/`v2s` | | 可选，传递 Turnstile 的 cData 参数。 |
 | x-cb-timeout                                                          | `integer`| v1/v2s 默认 30，v2 默认 15     | `所有版本` |      | 请求超时秒数。v1、v2s 范围 5–3600；v2 范围 5–360。仅支持整数。优先级高于 `x-cb-options` 中的 `long-timeout`。 |
 | [x-cb-options](/zh-cn/request_parameters?id=配置选项列表)               | `string` |                                | `所有版本` |      | 配置选项列表，支持多个选项，逗号分隔。详细配置请查看 [配置选项列表](/zh-cn/request_parameters?id=配置选项列表)。 |
+
+超时校验存在版本差异：Go V1 / V2s 忽略非整数或超出 5–3600 的 `x-cb-timeout`，继续使用默认 30 秒（配置 `long-timeout` 时为 60 秒）；Python V2 对非整数或超出 5–360 的值返回 HTTP 400，错误码为 `PARAMS_ERROR`。
 
 ### 配置选项列表
 
@@ -48,12 +52,11 @@
 | 参数                                                           | 支持版本  | 描述                                                                                 |
 |--------------------------------------------------------------|:--------:|------------------------------------------------------------------------------------|
 | disable-redirect                                             | `所有版本` | 禁用重定向，遇到 300-399 响应码时会返回完整内容，包括 `Set-Cookie`。（默认自动处理重定向） |
-| ~~long-timeout~~                                              | `v2`     | ~~延长超时。~~ 建议使用请求头 `x-cb-timeout`（优先级更高）。此选项可能后续废弃。     |
+| ~~long-timeout~~ | `v1`/`v2`/`v2s` | 设置超时为 60 秒；有效的 `x-cb-timeout` 优先。建议改用 `x-cb-timeout`。 |
 | force                                                        | `v2`     | 强制更换代理，避免在穿云 V2 会话期内无法更换代理时返回 `BYPASS_ERROR` 错误。           |
 | [ignore-lock](/zh-cn/request_parameters?id=关于-v2-part-模式并发问题)  | `v2`     | 忽略挑战锁，多个请求同时使用同一个会话时，直接忽略验证挑战锁，避免错误。                |
 | ~~[wait-lock](/zh-cn/request_parameters?id=关于-v2-part-模式并发问题)~~ | `v2`     | ~~等待挑战锁，多个请求同时使用同一个会话时，防止 `CHALLENGE_LOCK_TIMEOUT` 错误。~~       |
 | no-challenge                                                | `v2`     | 遇到验证时拒绝挑战，直接返回错误信息。                                     |
-
 
 ### APIKEY
 
@@ -233,7 +236,6 @@ public class Main {
 
 <!-- tabs:end -->
 
-
 ### X-Cb-Host、X-Cb-Protocol
 
 `X-Cb-Host`和`X-Cb-Protocol`也是访问穿云API的必要参数。
@@ -280,24 +282,25 @@ X-Cb-Protocol: http
 
 ### X-Cb-Fp
 
-设置请求时使用的浏览器指纹。未设置时默认 **`edge152-win`**；`chrome` / `edge` 未写版本号时使用主版本 **`152`**。
+设置请求时使用的浏览器指纹。未设置时默认 **`edge155-win`**；`chrome` / `edge` 未写版本号时使用主版本 **`152`**。
 
-格式：`{browser}{version}-{platform}`，例如 `edge152-win`、`chrome152-mac`；也可省略版本或平台（如 `chrome`、`edge-linux`、`chrome152`）。
+格式：`{browser}{version}-{platform}`，例如 `edge155-win`、`chrome152-mac`；也可省略版本或平台（如 `chrome`、`edge-linux`、`chrome152`）。
 
 * Chrome / Edge
     * 主版本范围 **`100~160`**
     * 平台：`win`（默认）、`linux`、`mac`；Python V2 另支持 `android`（如 `chrome-android`、`edge152-android`）
-    * 示例：`chrome`、`edge`、`chrome152`、`edge152-win`、`chrome130-mac`
+    * 示例：`chrome`、`edge`、`chrome152`、`edge155-win`、`chrome130-mac`
 * 其它
     * `firefox`（默认主版本 `152`）、`firefox144`、`firefox147`、`firefox151`
-    * `safari`、`safari-ios`、`safari17`、`safari18`、`safari17-ios`、`safari18-ios`
     * `opera`
 
-未填写 [`x-cb-ua`](/zh-cn/request_parameters?id=X-Cb-Ua) 时，默认 UA 由本指纹生成。默认 `edge152-win` 对应：
+未填写 [`x-cb-ua`](/zh-cn/request_parameters?id=X-Cb-Ua) 时，默认 UA 由本指纹生成。默认 `edge155-win` 对应：
 
 ```
-Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0
 ```
+
+上述为代码默认值。服务端可通过 `ELECTRON_API_FP` 覆盖默认指纹，通过 `ELECTRON_API_FP_CHROMIUM_VERSION` 覆盖省略版本号时的 Chromium 主版本；部署覆盖值可能不同。
 
 ### X-Cb-Ua
 
@@ -309,7 +312,7 @@ Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko)
 |---------|------|
 | 同时传 `x-cb-ua` 与 `x-cb-fp` | 使用 `x-cb-ua` 作为 UA，并按该 UA 匹配 TLS / 客户端提示 |
 | 只传 `x-cb-fp` | 按指纹生成默认 UA |
-| 两者都不传 | 指纹回落为 `edge152-win`，再生成上面的默认 Edge 152 UA |
+| 两者都不传 | 指纹回落为 `edge155-win`，再生成上面的默认 Edge 155 UA |
 
 **支持情况：**
 
@@ -325,7 +328,7 @@ curl --request GET \
   --header "x-cb-host: example.com" \
   --header "x-cb-version: 2" \
   --header "x-cb-proxy: <PROXY>" \
-  --header "x-cb-ua: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0"
+  --header "x-cb-ua: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0"
 ```
 
 ### X-Cb-Part

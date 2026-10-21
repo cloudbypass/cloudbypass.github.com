@@ -127,7 +127,7 @@ Scrapingbypass V2 supports handling the `Turnstile` component verification. Belo
 **Functionality Description**
 
 - **Provide `sitekey`**  
-  The user needs to fill in the `x-cb-sitekey` header parameter and provide the corresponding [`sitekey`](/us-en/request_parameters?id=how-to-get-sitekey).
+  The user needs to fill in the `x-cb-sitekey` header parameter and provide the corresponding [`sitekey`](/us-en/request_parameters?id=how-to-get-sitekey). Also place `[cf_token]` or `%5Bcf_token%5D` at the token position in the URL, headers, or body; sitekey alone does not trigger token solving. Use `x-cb-action` and `x-cb-cdata` for the site's optional action and cData parameters.
 
 - **Verification Result**  
   Typically, after a successful verification, `Turnstile` will return a token string starting with `0.`, or other names like `cf-turnstile-response` or `turnstileToken`, depending on the naming convention.

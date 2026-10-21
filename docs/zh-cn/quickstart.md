@@ -131,7 +131,7 @@ https://docs.cloudbypass.com/api-quick-reference.md
 **功能说明**
 
 - **提供 `sitekey`**  
-  用户需在请求头中填写参数 `x-cb-sitekey`，并提供对应的 [`sitekey`](/zh-cn/request_parameters?id=如何获取sitekey)。
+  用户需在请求头中填写参数 `x-cb-sitekey`，并提供对应的 [`sitekey`](/zh-cn/request_parameters?id=如何获取sitekey)。还须在 URL、请求头或请求体的 Token 位置放入 `[cf_token]` 或 `%5Bcf_token%5D`；仅填写 sitekey 不会触发 Token 求解。可通过 `x-cb-action`、`x-cb-cdata` 传递站点所需的 action 和 cData。
 
 - **验证结果**  
   通常情况下，`turnstile` 验证通过后会返回一个以 `0.` 开头的 Token 字符串，或者其他命名如 `cf-turnstile-response`

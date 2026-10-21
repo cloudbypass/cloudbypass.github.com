@@ -38,17 +38,21 @@ Here is the complete list of request headers for custom requests:
 | [x-cb-apikey](/us-en/request_parameters?id=apikey)                                  | `string`  |  [Get from Console](https://console.scrapingbypass.com/#/api/)  |   `All Versions`   | ![yes.svg](img%2Fyes.svg ":no-zoom") | The key used when accessing Scrapingbypass API.                                                                                                                                   |
 | [x-cb-host](/us-en/request_parameters?id=x-cb-host-x-cb-protocol)                   | `string`  |                                                                 |   `All Versions`   | ![yes.svg](img%2Fyes.svg ":no-zoom") | The target domain of the request, e.g., `opensea.io`. Do not include the protocol and path.                                                                                       |
 | [x-cb-protocol](/us-en/request_parameters?id=x-cb-host-x-cb-protocol)               | `string`  |                             "https"                             |   `All Versions`   |                                      | The request protocol, e.g., `http`, `https`.                                                                                                                                      |
-| [x-cb-fp](/us-en/request_parameters?id=x-cb-fp)                                     | `string`  | `edge152-win`                                                   |   `All Versions`   |                                      | Client fingerprint. Unversioned `chrome`/`edge` defaults to major version `152`.                                                                                                  |
+| [x-cb-fp](/us-en/request_parameters?id=x-cb-fp)                                     | `string`  | `edge155-win`                                                   |   `All Versions`   |                                      | Client fingerprint. Unversioned `chrome`/`edge` defaults to major version `152`.                                                                                                  |
 | [x-cb-ua](/us-en/request_parameters?id=x-cb-ua)                                     | `string`  |                                                                 | `v1` / `v2` / `v2s` |                                      | Custom User-Agent. Overrides `x-cb-fp` when set. Honored on Go V1/V2/V2s; currently ignored by Python V2.                                                                         |
 | [x-cb-proxy](/us-en/request_parameters?id=x-cb-proxy)                               | `string`  |                                                                 |   `All Versions`   |                                      | Custom proxy address, can be an IP or domain. Supports `http` and `socks5` protocols.                                                                                             |
 | x-cb-version                                                                        | `string`  |                                                                 |   `All Versions`   |                                      | For Scrapingbypass V2 use `2`; for V2s (same as V2 but with stream response) use `2s`.                                                                                            |
-| [x-cb-part](/us-en/request_parameters?id=x-cb-part)                                 | `integer` |                                                                 |   `v2` / `v2s`     |                                      | This header is valid only in Scrapingbypass V2/V2s, used to differentiate sessions, with a maximum of 1000 session partitions.                                                    |
+| [x-cb-part](/us-en/request_parameters?id=x-cb-part)                                 | `integer` |                                                                 |   `v2` / `v2s`     |                                      | This header is valid only in Scrapingbypass V2/V2s, used to differentiate sessions, by default allowing 0–998 (999 partitions). The actual range is `0 ≤ part < V2_PART_MAX` (server-configured).                                                    |
 | [x-cb-origin](/us-en/request_parameters?id=about-the-browser-cross-domain-problem)  | `string`  |                                                                 |   `All Versions`   |                                      | Replaces the `origin` field in the request header, commonly used to bypass CORS restrictions.                                                                                     |
 | [x-cb-referer](/us-en/request_parameters?id=about-the-browser-cross-domain-problem) | `string`  |                                                                 |   `All Versions`   |                                      | Replaces the `referer` field in the request header, commonly used to bypass CORS restrictions.                                                                                    |
-| x-cb-cookie                                                                         | `string`  |                                                                 |   `All Versions`   |                                      | Replaces the `cookie` field in the request header, commonly used to bypass CORS restrictions.                                                                                     |
-| [x-cb-sitekey](/us-en/request_parameters?id=how-to-get-sitekey)                     | `string`  |                                                                 |   `v2` / `v2s`     |                                      | Triggers the `Turnstile` widget verification, and the verification result will automatically populate subsequent requests.                                                        |
+| x-cb-cookie                                                                         | `string`  |                                                                 |   `All Versions`   |                                      | Merges with the original `cookie` header. Values in `x-cb-cookie` override cookies with the same name; other cookies are retained.                                                                                     |
+| [x-cb-sitekey](/us-en/request_parameters?id=how-to-get-sitekey)                     | `string`  |                                                                 |   `v2` / `v2s`     |                                      | Requires `[cf_token]` or `%5Bcf_token%5D` in the URL, headers, or body to trigger Turnstile token solving and placeholder replacement.                                                        |
+| x-cb-action | `string` | | `v2` / `v2s` | | Optional Turnstile action parameter. |
+| x-cb-cdata | `string` | | `v2` / `v2s` | | Optional Turnstile cData parameter. |
 | x-cb-timeout                                                                        | `integer` | v1/v2s default 30, v2 default 15                               |   `All Versions`   |                                      | Request timeout in seconds. v1 and v2s: range 5–3600; v2: range 5–360. Integer only. Takes precedence over `long-timeout` in `x-cb-options`.                                       |
 | [x-cb-options](/us-en/request_parameters?id=configuration-options-list)             | `string`  |                                                                 |   `All Versions`   |                                      | List of configuration options, supports multiple options separated by commas. For detailed configurations, see [Configuration Options List](/us-en/request_parameters?id=配置选项列表). |
+
+Timeout validation differs by backend: Go V1 / V2s ignores non-integer or out-of-range (5–3600) `x-cb-timeout` values and keeps 30 seconds, or 60 with `long-timeout`. Python V2 returns HTTP 400 with `PARAMS_ERROR` for non-integer or out-of-range (5–360) values.
 
 ### Configuration Options List
 
@@ -57,7 +61,7 @@ List of configuration options for the `x-cb-options` request header:
 | Parameter                                                                           | Supported Versions | Description                                                                                                                                                               |
 |-------------------------------------------------------------------------------------|:------------------:|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | disable-redirect                                                                    |   `All Versions`   | Disable redirects; when encountering a 300-399 response code, it will return the full content, including `Set-Cookie`. (By default, redirects are handled automatically.) |
-| ~~long-timeout~~                                                                    |        `v2`        | ~~Extend the timeout.~~ Prefer the `x-cb-timeout` request header (higher priority). This option may be deprecated later.                                                      |
+| ~~long-timeout~~ | `v1` / `v2` / `v2s` | Sets the timeout to 60 seconds; a valid `x-cb-timeout` takes precedence. Prefer `x-cb-timeout`. |
 | force                                                                               |        `v2`        | Force the proxy change to avoid returning a `BYPASS_ERROR` when the proxy cannot be changed during a Scrapingbypass V2 session.                                           |
 | [ignore-lock](/us-en/request_parameters?id=about-v2-part-mode-concurrency-issues)   |        `v2`        | Ignore challenge lock. When multiple requests use the same session, it will directly ignore the verification challenge lock to avoid errors.                              |
 | ~~[wait-lock](/us-en/request_parameters?id=about-v2-part-mode-concurrency-issues)~~ |        `v2`        | ~~Wait for the challenge lock. When multiple requests use the same session, it prevents the `CHALLENGE_LOCK_TIMEOUT` error.~~                                             |
@@ -289,24 +293,25 @@ Supported formats are as follows:
 
 ### X-Cb-Fp
 
-Set the browser fingerprint used in the request. Defaults to **`edge152-win`** when unset; unversioned `chrome` / `edge` use major version **`152`**.
+Set the browser fingerprint used in the request. Defaults to **`edge155-win`** when unset; unversioned `chrome` / `edge` use major version **`152`**.
 
-Format: `{browser}{version}-{platform}`, e.g. `edge152-win`, `chrome152-mac`. Version or platform may be omitted (e.g. `chrome`, `edge-linux`, `chrome152`).
+Format: `{browser}{version}-{platform}`, e.g. `edge155-win`, `chrome152-mac`. Version or platform may be omitted (e.g. `chrome`, `edge-linux`, `chrome152`).
 
 * Chrome / Edge
     * Major version range **`100~160`**
     * Platforms: `win` (default), `linux`, `mac`; Python V2 also supports `android` (e.g. `chrome-android`, `edge152-android`)
-    * Examples: `chrome`, `edge`, `chrome152`, `edge152-win`, `chrome130-mac`
+    * Examples: `chrome`, `edge`, `chrome152`, `edge155-win`, `chrome130-mac`
 * Others
     * `firefox` (default major `152`), `firefox144`, `firefox147`, `firefox151`
-    * `safari`, `safari-ios`, `safari17`, `safari18`, `safari17-ios`, `safari18-ios`
     * `opera`
 
-When [`x-cb-ua`](/us-en/request_parameters?id=x-cb-ua) is not set, the default UA is generated from this fingerprint. Default `edge152-win` maps to:
+When [`x-cb-ua`](/us-en/request_parameters?id=x-cb-ua) is not set, the default UA is generated from this fingerprint. Default `edge155-win` maps to:
 
 ```
-Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0
+Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0
 ```
+
+These are code defaults. Servers can override the default fingerprint with `ELECTRON_API_FP` and the unversioned Chromium major with `ELECTRON_API_FP_CHROMIUM_VERSION`; deployment overrides may differ.
 
 ### X-Cb-Ua
 
@@ -318,7 +323,7 @@ Custom User-Agent for the outbound request.
 |---------|----------|
 | Both `x-cb-ua` and `x-cb-fp` | Use `x-cb-ua` as UA, and match TLS / client hints from that UA |
 | Only `x-cb-fp` | Generate default UA from the fingerprint |
-| Neither | Fingerprint falls back to `edge152-win`, then the Edge 152 UA above |
+| Neither | Fingerprint falls back to `edge155-win`, then the Edge 155 UA above |
 
 **Support:**
 
@@ -334,7 +339,7 @@ curl --request GET \
   --header "x-cb-host: example.com" \
   --header "x-cb-version: 2" \
   --header "x-cb-proxy: <PROXY>" \
-  --header "x-cb-ua: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36 Edg/152.0.0.0"
+  --header "x-cb-ua: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/155.0.0.0 Safari/537.36 Edg/155.0.0.0"
 ```
 
 ### X-Cb-Part
