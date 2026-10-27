@@ -110,7 +110,7 @@ if __name__ == '__main__':
 
 ### Check balance
 
-`get_balance` calls `POST https://console.cloudbypass.com/api/v1/balance` with a JSON body (query parameters were
+`get_balance` calls `POST https://console.scrapingbypass.com/api/v1/balance` with a JSON body (query parameters were
 replaced by JSON fields).
 
 Use keyword argument `type` (or constants `BALANCE_TYPE_POINTS`, `BALANCE_TYPE_RES`, `BALANCE_TYPE_DAT`).

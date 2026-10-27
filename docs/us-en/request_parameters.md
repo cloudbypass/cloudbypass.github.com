@@ -11,20 +11,20 @@
 Scrapingbypass API uses the HTTPS protocol and supports all HTTP request methods. You need to replace the protocol and
 hostname of the target address with the Scrapingbypass API address. The request address for Scrapingbypass API is:
 
-`https://console.scrapingbypass.com`
+`https://api.scrapingbypass.com`
 
 ?> For example, if the original request is `https://example.io/user/login.html`, it should be modified
-to `https://console.scrapingbypass.com/user/login.html`.
+to `https://api.scrapingbypass.com/user/login.html`.
 
 ## Request Header Configuration
 
 In addition to the URL, you will also need the following request header parameters:
 
-* [`x-cb-apikey`](/us-en/request_parameters?id=x-cb-apikey) *[APIKEY](/us-en/quickstart?id=获取apikey)* – The unique key
+* [`x-cb-apikey`](/us-en/request_parameters?id=apikey) *[APIKEY](/us-en/quickstart?id=get-api-key)* – The unique key
   to access Scrapingbypass API.
 * [`x-cb-host`](/us-en/request_parameters?id=x-cb-host-x-cb-protocol) – The hostname or IP address (including port) of
   the target server. For example, to access `https://www.example.com/to/path`, this parameter would
-  be `www.example.com`, and the request URL would be `https://console.scrapingbypass.com/to/path`.
+  be `www.example.com`, and the request URL would be `https://api.scrapingbypass.com/to/path`.
 * [`x-cb-proxy`](/us-en/request_parameters?id=x-cb-proxy) – Set the proxy server. Scrapingbypass V1 provides a default
   dynamic proxy, while Scrapingbypass V2 requires setting a fixed or time-sensitive IP proxy.
 
@@ -43,14 +43,14 @@ Here is the complete list of request headers for custom requests:
 | [x-cb-proxy](/us-en/request_parameters?id=x-cb-proxy)                               | `string`  |                                                                 |   `All Versions`   |                                      | Custom proxy address, can be an IP or domain. Supports `http` and `socks5` protocols.                                                                                             |
 | x-cb-version                                                                        | `string`  |                                                                 |   `All Versions`   |                                      | For Scrapingbypass V2 use `2`; for V2s (same as V2 but with stream response) use `2s`.                                                                                            |
 | [x-cb-part](/us-en/request_parameters?id=x-cb-part)                                 | `integer` |                                                                 |   `v2` / `v2s`     |                                      | This header is valid only in Scrapingbypass V2/V2s, used to differentiate sessions, by default accepting integers from `0` to `998` (999 partitions). The available range is subject to the limits provided by the service.                                                    |
-| [x-cb-origin](/us-en/request_parameters?id=about-the-browser-cross-domain-problem)  | `string`  |                                                                 |   `All Versions`   |                                      | Replaces the `origin` field in the request header, commonly used to bypass CORS restrictions.                                                                                     |
-| [x-cb-referer](/us-en/request_parameters?id=about-the-browser-cross-domain-problem) | `string`  |                                                                 |   `All Versions`   |                                      | Replaces the `referer` field in the request header, commonly used to bypass CORS restrictions.                                                                                    |
+| [x-cb-origin](/us-en/request_parameters?id=about-browser-cross-origin-issues)  | `string`  |                                                                 |   `All Versions`   |                                      | Replaces the `origin` field in the request header, commonly used to bypass CORS restrictions.                                                                                     |
+| [x-cb-referer](/us-en/request_parameters?id=about-browser-cross-origin-issues) | `string`  |                                                                 |   `All Versions`   |                                      | Replaces the `referer` field in the request header, commonly used to bypass CORS restrictions.                                                                                    |
 | x-cb-cookie                                                                         | `string`  |                                                                 |   `All Versions`   |                                      | Merges with the original `cookie` header. Values in `x-cb-cookie` override cookies with the same name; other cookies are retained.                                                                                     |
-| [x-cb-sitekey](/us-en/request_parameters?id=how-to-get-sitekey)                     | `string`  |                                                                 |   `v2` / `v2s`     |                                      | Requires `[cf_token]` or `%5Bcf_token%5D` in the URL, headers, or body to trigger Turnstile token solving and placeholder replacement.                                                        |
+| [x-cb-sitekey](/us-en/request_parameters?id=how-to-obtain-sitekey)                     | `string`  |                                                                 |   `v2` / `v2s`     |                                      | Requires `[cf_token]` or `%5Bcf_token%5D` in the URL, headers, or body to trigger Turnstile token solving and placeholder replacement.                                                        |
 | x-cb-action | `string` | | `v2` / `v2s` | | Optional Turnstile action parameter. |
 | x-cb-cdata | `string` | | `v2` / `v2s` | | Optional Turnstile cData parameter. |
 | x-cb-timeout                                                                        | `integer` | v1/v2s default 30, v2 default 15                               |   `All Versions`   |                                      | Request timeout in seconds. v1 and v2s: range 5–3600; v2: range 5–360. Integer only. Takes precedence over `long-timeout` in `x-cb-options`.                                       |
-| [x-cb-options](/us-en/request_parameters?id=configuration-options-list)             | `string`  |                                                                 |   `All Versions`   |                                      | List of configuration options, supports multiple options separated by commas. For detailed configurations, see [Configuration Options List](/us-en/request_parameters?id=配置选项列表). |
+| [x-cb-options](/us-en/request_parameters?id=configuration-options-list)             | `string`  |                                                                 |   `All Versions`   |                                      | List of configuration options, supports multiple options separated by commas. For detailed configurations, see [Configuration Options List](/us-en/request_parameters?id=configuration-options-list). |
 
 Timeout validation differs by backend: Go V1 / V2s ignores non-integer or out-of-range (5–3600) `x-cb-timeout` values and keeps 30 seconds, or 60 with `long-timeout`. Python V2 returns HTTP 400 with `PARAMS_ERROR` for non-integer or out-of-range (5–360) values.
 
@@ -253,7 +253,7 @@ public class Main {
 The default value for `X-Cb-Protocol` is `https`, so you generally don't need to set it.
 
 ?> Replace the protocol, domain name (or IP), and port number in the original request URL with the Scrapingbypass API
-address (`https://api.cloudbypass.com`). The `X-Cb-Host` header should contain the domain name that was replaced.
+address (`https://api.scrapingbypass.com`). The `X-Cb-Host` header should contain the domain name that was replaced.
 Here is an HTTP example:
 
 ```http request
@@ -261,7 +261,7 @@ Here is an HTTP example:
 GET https://example.io/user/login.html
 
 # Modified Request
-GET https://api.cloudbypass.com/user/login.html
+GET https://api.scrapingbypass.com/user/login.html
 X-Cb-Apikey: <APIKEY>
 X-Cb-Host: example.io
 ```
@@ -273,7 +273,7 @@ X-Cb-Host: example.io
 GET http://example.io/user/login.html
 
 # Modified Request
-GET https://api.cloudbypass.com/user/login.html
+GET https://api.scrapingbypass.com/user/login.html
 X-Cb-Apikey: <APIKEY>
 X-Cb-Host: example.io
 X-Cb-Protocol: http
@@ -334,7 +334,7 @@ The request `User-Agent` header is stripped and not forwarded. Use `x-cb-ua` ins
 
 ```shell
 curl --request GET \
-  --url "https://api.cloudbypass.com/" \
+  --url "https://api.scrapingbypass.com/" \
   --header "x-cb-apikey: <APIKEY>" \
   --header "x-cb-host: example.com" \
   --header "x-cb-version: 2" \
@@ -354,7 +354,7 @@ change. (Generally not recommended.)
 
 ## Using Scrapingbypass V2 for Requests
 
-Scrapingbypass V2 is suitable for websites that require `JS Challenges`, `Turnstile` widgets, or `DataDome` challenges. DataDome is detected automatically (`403` with response headers `x-datadome-cid` and `x-dd-b`); no extra parameters are needed. Usage is the same as JS Challenge—see [Bypass DataDome](/us-en/quickstart?id=bypass-datadome-challenge).
+Scrapingbypass V2 is suitable for websites that require `JS Challenges`, `Turnstile` widgets, or `DataDome` challenges. DataDome is detected automatically (`403` with response headers `x-datadome-cid` and `x-dd-b`); no extra parameters are needed. Usage is the same as JS Challenge—see [Bypass DataDome](/us-en/challenges?id=bypass-datadome-challenge).
 
 ### `Part` Mode Request Example
 
@@ -387,7 +387,7 @@ curl --request GET ^
 ```Python
 import requests
 
-url = "https://api.cloudbypass.com/accounts/label/lido"
+url = "https://api.scrapingbypass.com/accounts/label/lido"
 
 headers = {
     'x-cb-apikey': '<APIKEY>',
@@ -436,7 +436,7 @@ func main() {
 	client.Header.Add("X-Cb-Version", "2")
 	client.Header.Add("X-Cb-Part", "0")
 
-	resp, err := client.R().Get("https://api.cloudbypass.com/accounts/label/lido")
+	resp, err := client.R().Get("https://api.scrapingbypass.com/accounts/label/lido")
 
 	if err != nil {
 		fmt.Println(err)
@@ -485,7 +485,7 @@ func main() {
 ```javascript
 const axios = require('axios');
 
-const url = "https://api.cloudbypass.com/accounts/label/lido";
+const url = "https://api.scrapingbypass.com/accounts/label/lido";
 const headers = {
     'x-cb-apikey': '/* APIKEY */',
     'x-cb-host': 'etherscan.io',
@@ -534,7 +534,7 @@ import java.net.http.HttpResponse;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        String url = "https://api.cloudbypass.com/accounts/label/lido";
+        String url = "https://api.scrapingbypass.com/accounts/label/lido";
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -583,7 +583,7 @@ curl --request GET ^
 ```Python
 import requests
 
-url = "https://api.cloudbypass.com/accounts/label/lido"
+url = "https://api.scrapingbypass.com/accounts/label/lido"
 
 headers = {
     'x-cb-apikey': '<APIKEY>',
@@ -632,7 +632,7 @@ func main() {
 	client.Header.Add("X-Cb-Proxy", "/* PROXY */")
 	client.Header.Add("X-Cb-Version", "2")
 
-	resp, err := client.R().Get("https://api.cloudbypass.com/accounts/label/lido")
+	resp, err := client.R().Get("https://api.scrapingbypass.com/accounts/label/lido")
 
 	if err != nil {
 		fmt.Println(err)
@@ -681,7 +681,7 @@ func main() {
 ```javascript
 const axios = require('axios');
 
-const url = "https://api.cloudbypass.com/accounts/label/lido";
+const url = "https://api.scrapingbypass.com/accounts/label/lido";
 const headers = {
     'x-cb-apikey': '/* APIKEY */',
     'x-cb-host': 'etherscan.io',
@@ -729,7 +729,7 @@ import java.net.http.HttpResponse;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        String url = "https://api.cloudbypass.com/accounts/label/lido";
+        String url = "https://api.scrapingbypass.com/accounts/label/lido";
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))

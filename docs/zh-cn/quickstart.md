@@ -1,185 +1,68 @@
 # 快速开始
 
->
-使用穿云可以帮助您轻松绕过 Cloudflare、DataDome 等验证，目前支持绕过 JS质询、Turnstile、DataDome 等产品验证。本文档提供了穿云[HTTP API](/zh-cn/request_parameters)、[本地代理工具](/zh-cn/proxy_tools)
-以及[SDK](/zh-cn/quickstart?id=代码示例)的详细使用方法。
+完成一次请求，再按需接入 SDK 或挑战处理。已有项目需要 AI 协助？直接阅读 [Vibe Coding 指南](/zh-cn/vibe_coding)。
 
-# 工作流程
+## 获取APIKEY
 
-穿云API的请求流程
+在[控制台](https://console.cloudbypass.com/#/api/)注册并获取 API Key，将它配置为环境变量 `CLOUDBYPASS_APIKEY`。请勿将密钥提交到代码仓库。
 
-![cloudbypass_api_fc.svg](img/cloudbypass_api_fc.svg)
+需要先体验服务？查看[领取试用](/zh-cn/trial)。请求及挑战可能消耗积分，详见[计费说明](/zh-cn/credit_consume)。
 
-?> 无论使用[本地代理工具](/zh-cn/proxy_tools)或是[SDK](/zh-cn/quickstart?id=代码示例)都只是对请求进行转发，实际上还是HTTP
-API请求。
+## 选择版本
 
-# 获取APIKEY
+| 使用场景 | 版本 | 代理要求 |
+| --- | --- | --- |
+| 浏览器能访问，程序请求返回 403 | V1（默认） | 默认自带动态代理 |
+| JS 质询、Turnstile 或 DataDome | V2 | 必须提供粘性或固定 IP 代理 |
+| 需要流式响应或下载大文件 | V2s | 与 V2 相同 |
 
-访问[穿云API控制台](https://console.cloudbypass.com/#/api/)注册账户获取APIKEY。
+下面先演示默认 V1 的请求转换。遇到挑战时，按[版本与挑战处理](/zh-cn/challenges)配置 V2；不要仅重复请求。
 
-# 代码示例
+## 发起首次请求
 
-查看已有的[代码示例](https://github.com/cloudbypass/example)快速集成到项目。
+以下示例访问 `https://example.com/`。运行前配置环境变量；替换目标时，同时修改 `x-cb-host` 和 URL 的路径、查询参数。
 
-![GitHub last commit](https://img.shields.io/github/last-commit/cloudbypass/example ":no-zoom")
+**Bash / macOS / Linux**
 
-* [Python SDK](/zh-cn/python_sdk) ![PyPI - Version](https://img.shields.io/pypi/v/cloudbypass ":no-zoom")
-* [Nodejs SDK](/zh-cn/nodejs_sdk) ![NPM Version](https://img.shields.io/npm/v/cloudbypass-sdk ":no-zoom")
-* [Go SDK](/zh-cn/golang_sdk) ![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/cloudbypass/golang-sdk ":no-zoom")
+```bash
+curl -i "https://api.cloudbypass.com/" \
+  -H "x-cb-apikey: ${CLOUDBYPASS_APIKEY}" \
+  -H "x-cb-host: example.com"
+```
 
-# 可访问性测试
+**Windows PowerShell**
 
-通过使用[代码生成器](https://console.cloudbypass.com/#/code-generator)
-检查目标网站是否可以突破，新注册用户可以[联系客服](https://t.me/cloudbypasscom)获取试用。
+```powershell
+curl.exe -i "https://api.cloudbypass.com/" `
+  -H "x-cb-apikey: $env:CLOUDBYPASS_APIKEY" `
+  -H "x-cb-host: example.com"
+```
+
+转换规则：只将原 URL 的协议和主机替换成 `https://api.cloudbypass.com`，保留路径、查询、方法及请求体。原目标使用 HTTP 时，额外设置 `x-cb-protocol: http`。完整配置见[请求参数](/zh-cn/request_parameters)。
+
+## 检查请求结果
+
+1. 查看响应头 `x-cb-status`：`ok` 表示穿云请求成功，响应体为目标站内容。
+2. 再检查目标 HTTP 状态码和业务内容，确认得到预期结果。
+3. `x-cb-status` 非 `ok` 时，读取 JSON 中的 `id`、`code`、`message`，根据[错误代码](/zh-cn/response_data)定位问题。
+
+## 代码示例
+
+- 使用 SDK：[Python](/zh-cn/python_sdk) · [Node.js](/zh-cn/nodejs_sdk) · [Go](/zh-cn/golang_sdk)
+- 让 AI 帮助接入：[Vibe Coding](/zh-cn/vibe_coding)
+- 在现有代理客户端中使用：[本地代理工具](/zh-cn/proxy_tools)
+- 更多完整项目：[公开代码示例](https://github.com/cloudbypass/example)
+
+## 可访问性测试
+
+用控制台的[代码生成器](https://console.cloudbypass.com/#/code-generator)测试目标网站，并生成对应请求。
+
+## 工作流程
+
+客户端 → 穿云 HTTP API → 目标网站。SDK 与代理工具也通过 HTTP API 转发请求。
+
+![穿云 API 请求流程](img/cloudbypass_api_fc.svg)
 
 ## 在OpenClaw中使用
 
-使用 AI 编程助手、HTTP MCP 或需要生成代码与排查请求失败时，请阅读 [Vibe Coding 工具接入指南](/zh-cn/vibe_coding)。
-
-```
-使用穿云 API：
-https://docs.cloudbypass.com/api-quick-reference.md
-```
-
-在 OpenClaw 中调用穿云 API 时，建议 AI 代理遵循以下步骤：
-
-1. **先检查环境变量中的 APIKEY 和代理配置**：  
-   - 优先从 `CLOUDBYPASS_APIKEY` 读取 API Key。  
-   - 若需要 V2 能力，则从 `CLOUDBYPASS_PROXY` 读取代理地址。
-2. **确认用户代理类型**：  
-   - 识别用户当前使用的是**动态代理 IP**还是**粘性代理 IP**。  
-   - 使用穿云 V2 时，更推荐使用**粘性代理 IP**，以便保持会话连续性和挑战结果的有效性。
-3. **确认所有配置无误后再访问目标地址**：  
-   - 包括目标域名、协议（http/https）、V1/V2/V2s 版本选择、可选头（如 `x-cb-part`、`x-cb-sitekey`、`x-cb-timeout` 等）均已正确设置，再发起访问目标站点的请求。
-
-# 关于穿云API版本
-
-## 穿云V1
-
-> 在浏览器可以访问，通过程序代码访问就返回403的情况时使用。
-
-穿云v1默认自带动态代理，也可以根据需求自行设置代理服务器，且每次请求都是无状态的。
-
-## 穿云V2
-
-> 当遇到以下 `JS质询`、`Turnstile` 部件或 `DataDome` 挑战时使用
-
-![turnstile.png](img%2Fturnstile.gif ":no-zoom :size=350")
-
-?> 穿云V2必须提供固定或具有时效性的IP代理才能运作。
-
-## 穿云V2s
-
-穿云 V2s 与 V2 一致，但支持 **stream 流式响应**，适合大文件下载或需要边下边处理的场景。使用方式：请求头 `x-cb-version: 2s`，其余参数同 V2（如 `x-cb-proxy`、`x-cb-part` 等）。
-
-### 如何区分常见验证？
-
-在穿云V2中，可以通过以下规则判断目标网站使用的验证机制：
-
-1. **JS质询**
-    - 当访问者**第一次加载网站页面**时，返回 HTTP 状态码 `403`。
-    - 响应头中包含 `cf-mitigated: challenge` 字段。
-
-2. **Turnstile**
-    - 当**提交表单时**触发验证小部件。
-    - 不符合以上 `JS质询` 的特征，即响应中不包含 `cf-mitigated: challenge` 字段。
-
-3. **DataDome**
-    - 返回 HTTP 状态码 `403`。
-    - 响应头同时包含 `x-datadome-cid` 与 `x-dd-b` 字段（常见还有 `x-datadome: protected`）。
-
-### 突破 `JS质询`，穿云V2自动挑战
-
-穿云V2支持两种模式来自动应对目标网站的 JS 质询机制，分别是 `Cookie` 模式和 `Part` 模式。以下是两种模式的具体说明：
-
-**1. Cookie 模式**
-客户端负责管理服务端返回的加密 Cookie。
-
-- **会话管理**  
-  客户端需具备会话管理功能。例如，Python 的 `requests` 库集成了会话管理模块，可用于在多个请求之间保持会话状态。
-
-- **挑战成功**  
-  穿云服务在挑战成功后，将加密后的 Cookie 返回给客户端。客户端在后续请求中携带这些 Cookie，即可持续保持会话状态。
-
-- **挑战失败**  
-  如果挑战失败，服务端会返回一个 JSON 格式的响应体，其中包括：
-    - 请求 ID
-    - [错误代码](/zh-cn/response_data?id=错误代码)
-    - 错误信息
-
-**2. Part 模式**
-服务端托管验证 Cookie，支持通过会话分区实现更精细的控制。
-
-- **分区控制**  
-  配置请求头参数 `x-cb-part`，可实现服务端会话的分区管理，确保分区内的会话相互独立。
-
-- **挑战成功**  
-  穿云服务在挑战成功后，会将验证通过的 Cookie 存储在服务端的会话分区内，有效期为 10 分钟。在此期间：
-    - 客户端发起的后续请求会自动携带分区内的 Cookie，保持会话状态。
-    - 每次成功请求会刷新会话分区的有效期，确保持续访问。
-
-- **挑战失败**  
-  如果挑战失败，服务端会返回一个 JSON 格式的响应体，其中包括：
-    - 请求 ID
-    - [错误代码](/zh-cn/response_data?id=错误代码)
-    - 错误信息
-
----
-
-### 突破 `turnstile` 部件
-
-穿云V2支持应对 `turnstile` 部件的验证机制。以下为具体操作说明：
-
-**功能说明**
-
-- **提供 `sitekey`**  
-  用户需在请求头中填写参数 `x-cb-sitekey`，并提供对应的 [`sitekey`](/zh-cn/request_parameters?id=如何获取sitekey)。还须在 URL、请求头或请求体的 Token 位置放入 `[cf_token]` 或 `%5Bcf_token%5D`；仅填写 sitekey 不会触发 Token 求解。可通过 `x-cb-action`、`x-cb-cdata` 传递站点所需的 action 和 cData。
-
-- **验证结果**  
-  通常情况下，`turnstile` 验证通过后会返回一个以 `0.` 开头的 Token 字符串，或者其他命名如 `cf-turnstile-response`
-  或 `turnstileToken`，只是命名方式不同。
-
-- **Token 使用方式**  
-  穿云V2不会将 Token 直接返回到客户端，而是在需要使用 Token 的位置填充 `[cf_token]` 字符串，穿云会自动替换为有效的 Token
-  并发起请求。
-
-**使用示例**
-
-以下为 Token 不同使用场景的示例代码：
-
-1. **示例 1**  
-   将 Token 放入请求头的 `Authorization` 字段：  
-   [查看代码示例](https://github.com/cloudbypass/example/blob/main/code/com/berachain/faucet/artio/api_claim.py#L20)
-
-2. **示例 2**  
-   将 Token 放入请求头的 `X-Turnstile-Response` 字段：  
-   [查看代码示例](https://github.com/cloudbypass/example/blob/main/code/com/joshsfrogs/login.py#L24)
-
-3. **示例 3**  
-   将 Token 放入请求体的 `accessToken` 字段：  
-   [查看代码示例](https://github.com/cloudbypass/example/blob/main/code/com/cityline/api_otp.py#L22)
-
----
-
-### 突破 `DataDome` 挑战
-
-穿云V2支持自动识别并处理 DataDome 挑战，无需额外请求头。
-
-**识别特征**
-
-- 目标站返回 `403`
-- 响应头同时存在 `x-datadome-cid`、`x-dd-b`
-
-**使用说明**
-
-- 与其它 V2 挑战相同，必须提供**粘性 / 固定时效代理**（`x-cb-proxy`）。
-- 使用方式与 [JS质询](/zh-cn/quickstart?id=突破-js质询穿云v2自动挑战) 一致：`Cookie` 模式或 `Part` 模式均可。
-- Cookie 模式下，挑战成功后返回的加密 Cookie 中会包含 `datadome`；Part 模式下由服务端会话托管。
-- 若站点同时存在 Cloudflare 与 DataDome，穿云会按流水线依次处理；每次挑战成功按阶段扣费，详见 [积分消耗](/zh-cn/credit_consume)。
-
-?> DataDome 挑战耗时可能较长，建议合理设置 `x-cb-timeout`（V2 最长 360 秒）。
-
-### 获取帮助
-
-* [访问论坛](https://www.cloudbypass.com/blog/)
-* [联系客服](https://t.me/cloudbypasscom)
+环境变量、代理选择和 AI 提示词统一见 [Vibe Coding 指南](/zh-cn/vibe_coding)。

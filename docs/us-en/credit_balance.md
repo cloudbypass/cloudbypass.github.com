@@ -1,10 +1,10 @@
 # Check account balance
 
-You can view usage in the [console](https://console.cloudbypass.com/#/api/), or query via HTTP API / SDK.
+You can view usage in the [console](https://console.scrapingbypass.com/#/api/), or query via HTTP API / SDK.
 
 ### Via HTTP API
 
-Use **POST** `https://console.cloudbypass.com/api/v1/balance` with `Content-Type: application/json` and a JSON body: `apikey`, `email`, `type`.
+Use **POST** `https://console.scrapingbypass.com/api/v1/balance` with `Content-Type: application/json` and a JSON body: `apikey`, `email`, `type`.
 
 **`type` and response (on HTTP 200):**
 
@@ -32,12 +32,12 @@ Use **POST** `https://console.cloudbypass.com/api/v1/balance` with `Content-Type
 
 ```shell
 # Credits
-curl -s -X POST "https://console.cloudbypass.com/api/v1/balance" \
+curl -s -X POST "https://console.scrapingbypass.com/api/v1/balance" \
   -H "Content-Type: application/json" \
   -d '{"apikey":"<APIKEY>","email":"<EMAIL>","type":"points"}'
 
 # Residential traffic (use "dat" for datacenter)
-curl -s -X POST "https://console.cloudbypass.com/api/v1/balance" \
+curl -s -X POST "https://console.scrapingbypass.com/api/v1/balance" \
   -H "Content-Type: application/json" \
   -d '{"apikey":"<APIKEY>","email":"<EMAIL>","type":"res"}'
 ```

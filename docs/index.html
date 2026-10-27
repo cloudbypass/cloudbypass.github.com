@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html lang="zh-CN">
 <head>
     <meta charset="utf-8">
     <meta name="viewport"
@@ -61,7 +62,7 @@
         }
 
     </style>
-    <script src="static/docsify-tabs.js"></script>
+    <link rel="stylesheet" href="static/docs-layout.css?v=2">
 </head>
 
 <body>
@@ -82,14 +83,11 @@
         logo: '/_media/icon.png',
         // themeColor: '#5d70f8',
         fallbackLanguages: ['zh-cn'],
-        coverpage: {
-            '/us-en/': '_coverpage.md',
-            '/zh-cn/': '_coverpage.md',
-        },
+        coverpage: false,
         // 按照路由切换
         nameLink: {
-            '/zh-cn/': '#/zh-cn/quickstart',
-            '/us-en/': '#/us-en/quickstart',
+            '/zh-cn/': '#/zh-cn/',
+            '/us-en/': '#/us-en/',
             '/': '#/',
         },
         // Sidebar Configuration
@@ -97,10 +95,13 @@
         loadNavbar: true,
         loadSidebar: true,
         alias: {
-            '/*/_sidebar.md': '/_sidebar.md'
+            '/zh-cn/.*/_sidebar.md': '/zh-cn/_sidebar.md',
+            '/us-en/.*/_sidebar.md': '/us-en/_sidebar.md',
+            '/zh-cn/.*/_navbar.md': '/zh-cn/_navbar.md',
+            '/us-en/.*/_navbar.md': '/us-en/_navbar.md'
         },
         maxLevel: 0,
-        // Set subMaxLevel to 0 to remove automatic display of page table of contents (TOC) in Sidebar
+        // Show section links beneath the active page in the sidebar.
         subMaxLevel: 3,
 
         // Search Plugin Configuration
@@ -114,7 +115,7 @@
             // 支持本地化
             noData: {
                 '/zh-cn/': '找不到结果',
-                '/us-en': 'No Results'
+                '/us-en/': 'No Results'
             },
             pathNamespaces: ['/zh-cn', '/us-en'],
         },
@@ -131,6 +132,8 @@
         ],
     };
 </script>
+
+<script src="static/docs-layout.js?v=2"></script>
 
 <!-- Required -->
 <script src="https://cdn.jsdelivr.net/npm/docsify@4/lib/docsify.min.js"></script>

@@ -73,13 +73,13 @@
 ```shell
 # linux
 curl --request GET \
---url "https://api.scrapingbypass.com/category/memberships" \
+--url "https://api.cloudbypass.com/category/memberships" \
 --header "x-cb-apikey: <APIKEY>" \
 --header "x-cb-host: opensea.io"
 
 # windows
 curl --request GET ^
---url "https://api.scrapingbypass.com/category/memberships" ^
+--url "https://api.cloudbypass.com/category/memberships" ^
 --header "x-cb-apikey: <APIKEY>" ^
 --header "x-cb-host: opensea.io"
 ```
@@ -89,7 +89,7 @@ curl --request GET ^
 ```Python
 import requests
 
-url = "https://api.scrapingbypass.com/category/memberships"
+url = "https://api.cloudbypass.com/category/memberships"
 
 headers = {
     'x-cb-apikey': '<APIKEY>',
@@ -132,7 +132,7 @@ func main() {
 	client.Header.Add("X-Cb-Apikey", "/* APIKEY */")
 	client.Header.Add("X-Cb-Host", "opensea.io")
 
-	resp, err := client.R().Get("https://api.scrapingbypass.com/category/memberships")
+	resp, err := client.R().Get("https://api.cloudbypass.com/category/memberships")
 
 	if err != nil {
 		fmt.Println(err)
@@ -179,7 +179,7 @@ func main() {
 ```javascript
 const axios = require('axios');
 
-const url = "https://api.scrapingbypass.com/category/memberships";
+const url = "https://api.cloudbypass.com/category/memberships";
 const headers = {
     'x-cb-apikey': '/* APIKEY */',
     'x-cb-host': 'opensea.io',
@@ -219,7 +219,7 @@ import java.net.http.HttpResponse;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        String url = "https://api.scrapingbypass.com/category/memberships";
+        String url = "https://api.cloudbypass.com/category/memberships";
         HttpClient client = HttpClient.newHttpClient();
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url))
@@ -340,7 +340,7 @@ curl --request GET \
 
 ## 使用穿云V2进行请求
 
-穿云V2适用于需要通过 `JS质询`、`Turnstile` 部件或 `DataDome` 挑战的网站。DataDome 由服务端自动识别（`403` 且响应头含 `x-datadome-cid`、`x-dd-b`），无需额外参数，用法与 JS质询相同，详见 [突破 DataDome](/zh-cn/quickstart?id=突破-datadome-挑战)。
+穿云V2适用于需要通过 `JS质询`、`Turnstile` 部件或 `DataDome` 挑战的网站。DataDome 由服务端自动识别（`403` 且响应头含 `x-datadome-cid`、`x-dd-b`），无需额外参数，用法与 JS质询相同，详见 [突破 DataDome](/zh-cn/challenges?id=突破-datadome-挑战)。
 
 ### `Part`模式请求示例
 
@@ -351,7 +351,7 @@ curl --request GET \
 ```shell
 # linux
 curl --request GET \
---url "https://api.scrapingbypass.com/accounts/label/lido" \
+--url "https://api.cloudbypass.com/accounts/label/lido" \
 --header "x-cb-apikey: <APIKEY>" \
 --header "x-cb-host: etherscan.io" \
 --header "x-cb-version: 2" \
@@ -360,7 +360,7 @@ curl --request GET \
 
 # windows
 curl --request GET ^
---url "https://api.scrapingbypass.com/accounts/label/lido" ^
+--url "https://api.cloudbypass.com/accounts/label/lido" ^
 --header "x-cb-apikey: <APIKEY>" ^
 --header "x-cb-host: etherscan.io" ^
 --header "x-cb-version: 2" ^
@@ -549,7 +549,7 @@ public class Main {
 ```shell
 # linux
 curl --request GET \
---url "https://api.scrapingbypass.com/accounts/label/lido" \
+--url "https://api.cloudbypass.com/accounts/label/lido" \
 --header "x-cb-apikey: <APIKEY>" \
 --header "x-cb-host: etherscan.io" \
 --header "x-cb-version: 2" \
@@ -557,7 +557,7 @@ curl --request GET \
 
 # windows
 curl --request GET ^
---url "https://api.scrapingbypass.com/accounts/label/lido" ^
+--url "https://api.cloudbypass.com/accounts/label/lido" ^
 --header "x-cb-apikey: <APIKEY>" ^
 --header "x-cb-host: etherscan.io" ^
 --header "x-cb-version: 2" ^
