@@ -42,6 +42,10 @@ jobs:
           rm -rf site/docs/.idea
           rm -f site/docs/CNAME
           cp -a site/docs/. site/
+          cp CNAME site/CNAME
+
+      - name: Validate documentation and domain
+        run: python3 .github/scripts/validate_docs.py site --domain docs.cloudbypass.com
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
